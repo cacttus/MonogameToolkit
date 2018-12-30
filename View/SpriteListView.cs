@@ -20,27 +20,33 @@ namespace Monoedit
     public class SpriteListViewItem
     {
         public object Object { get; set; } = null;
+
+        //*Can have an Image OR a frame.
         public Frame Frame { get; set; } = null;
+        public Image Image { get; set; } = null;
 
         public SpriteListViewItem(object tag, Frame frame)
         {
             Object = tag;
             Frame = frame;
         }
+        public SpriteListViewItem(object tag, Image m)
+        {
+            Object = tag;
+            Image = m;
+        }
     }
 
     public class SpriteListView : ListView
     {
         private int iIconSize = 32;
-        private MainForm _objMainForm = (MainForm)null;
         private Func<List<SpriteListViewItem>> GetFrames;
         private Action<List<object>> DeleteFunc;
 
-        public SpriteListView(MainForm mf, Func<List<SpriteListViewItem>> GetFramesFunc, Action<List<object>> deleteFunc)
+        public SpriteListView(Func<List<SpriteListViewItem>> GetFramesFunc, Action<List<object>> deleteFunc)
         {
             GetFrames = GetFramesFunc;
             DeleteFunc = deleteFunc;
-            _objMainForm = mf;
             DoubleClick += new EventHandler(SpriteListView_DoubleClick);
             MouseClick += new MouseEventHandler(SpriteListView_Click);
             KeyDown += new KeyEventHandler(SpriteListView_KeyDown);
@@ -106,9 +112,9 @@ namespace Monoedit
         {
             if (f != null)
             {
-                if (f is Model)
+                if (f is Model3D)
                 {
-                    return (f as Model).Name;
+                    return (f as Model3D).Name;
                 }
                 else if (f is Sprite)
                 {
@@ -131,17 +137,17 @@ namespace Monoedit
             object selectedObject = GetSelectedObject();
             if (selectedObject == null)
                 return;
-            if (selectedObject is Model)
+            if (selectedObject is Model3D)
             {
-                _objMainForm.AddEditObject(selectedObject as Model, false);
+                Globals.MainForm.AddEditObject(selectedObject as Model3D, false);
             }
             else if (selectedObject is Sprite)
             {
-                _objMainForm.AddEditObject(selectedObject as Sprite, (selectedObject as Sprite).Model, false);
+                Globals.MainForm.AddEditObject(selectedObject as Sprite, (selectedObject as Sprite).Model, false);
             }
             else if (selectedObject is Frame)
             {
-                _objMainForm.AddEditObject(selectedObject as Frame, (selectedObject as Frame).Sprite, false);
+                Globals.MainForm.AddEditObject(selectedObject as Frame, (selectedObject as Frame).Sprite, false);
             }
         }
 
@@ -166,7 +172,15 @@ namespace Monoedit
                 Frame frame = spriteListViewItemList[index].Frame;
                 if (frame == null)
                 {
-                    imageList.Images.Add((Image)Globals.GetDefaultXImage());
+                    if (spriteListViewItemList[index].Image != null)
+                    {
+                        imageList.Images.Add(spriteListViewItemList[index].Image);
+                    }
+                    else
+                    {
+
+                        imageList.Images.Add((Image)Globals.GetDefaultXImage());
+                    }
                 }
                 else
                 {

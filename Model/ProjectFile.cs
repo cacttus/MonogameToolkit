@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 namespace Monoedit
 {
     //**We need something besides xmlserializer
-    public class ProjectFile
+    public class ProjectFile :  Monoedit.JsonFile<ProjectFile>
     {
         #region Private:Members
         [JsonIgnore]
@@ -198,38 +198,38 @@ namespace Monoedit
                 BinUtils.WriteString(s, w);
             }
         }
-        public void Save(string loc, bool textures)
-        {
-            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-            sw.Start();
-            {
-                LoadedOrSavedProjectFileName = loc;
-                SaveBinary(loc, textures);
+        //public void Save(string loc, bool textures)
+        //{
+        //    System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+        //    sw.Start();
+        //    {
+        //        LoadedOrSavedProjectFileName = loc;
+        //        SaveBinary(loc, textures);
 
-                //string xmlLoc = Path.Combine(Path.GetDirectoryName(loc), Path.GetFileNameWithoutExtension(loc) + ".xml");
-                //SaveXML(xmlLoc, true, this);
+        //        //string xmlLoc = Path.Combine(Path.GetDirectoryName(loc), Path.GetFileNameWithoutExtension(loc) + ".xml");
+        //        //SaveXML(xmlLoc, true, this);
 
-                string jsonLoc = Path.Combine(Path.GetDirectoryName(loc), Path.GetFileNameWithoutExtension(loc) + ".json");
-                SaveJson(jsonLoc, true, this);
-            }
-            sw.Stop();
-            Globals.MainForm.SetStatus("Saved '" + loc + "' in " + Globals.TimeSpanToString(sw.Elapsed));
-        }
-        public void Load(string loc)
-        {
-            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-            sw.Start();
-            {
-                LoadedOrSavedProjectFileName = loc;
-                if (LoadBinary(loc) == false)
-                {
-                    //LoadXML(loc);
-                    LoadJson(loc);
-                }
-            }
-            sw.Stop();
-            Globals.MainForm.SetStatus("Loaded '" + loc + "' in " + Globals.TimeSpanToString(sw.Elapsed));
-        }
+        //        string jsonLoc = Path.Combine(Path.GetDirectoryName(loc), Path.GetFileNameWithoutExtension(loc) + ".json");
+        //        SaveJson(jsonLoc, true, this);
+        //    }
+        //    sw.Stop();
+        //    Globals.MainForm.SetStatus("Saved '" + loc + "' in " + Globals.TimeSpanToString(sw.Elapsed));
+        //}
+        //public void Load(string loc)
+        //{
+        //    System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+        //    sw.Start();
+        //    {
+        //        LoadedOrSavedProjectFileName = loc;
+        //        if (LoadBinary(loc) == false)
+        //        {
+        //            //LoadXML(loc);
+        //            LoadJson(loc);
+        //        }
+        //    }
+        //    sw.Stop();
+        //    Globals.MainForm.SetStatus("Loaded '" + loc + "' in " + Globals.TimeSpanToString(sw.Elapsed));
+        //}
         //public static void SaveXML(string loc, bool textures, ProjectFile pf)
         //{
 
@@ -275,150 +275,148 @@ namespace Monoedit
         //    }
         //    return null;
         //}
-        public static void SaveJson(string loc, bool textures, ProjectFile pf)
-        {
-            try
-            {
-                string output = JsonConvert.SerializeObject(pf);
+        //public static void SaveJson(string loc, bool textures, ProjectFile pf)
+        //{
+        //    try
+        //    {
+        //        string output = JsonConvert.SerializeObject(pf);
+        //        File.WriteAllText(loc, output);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Globals.MainForm.LogError("Failed to save XML File: " + ex.ToString());
+        //    }
+        //}
+        //public static ProjectFile LoadJson(string loc)
+        //{
+        //    try
+        //    {
+        //        string text = System.IO.File.ReadAllText(loc);
+        //        return JsonConvert.DeserializeObject<ProjectFile>(text);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Globals.MainForm.LogError("Failed to save XML File: " + ex.ToString());
+        //    }
+        //    return null;
+        //}
+        //private bool SaveBinary(string loc, bool textures)
+        //{
+        //    bool success = false;
+        //    try
+        //    {
+        //        string dirname = System.IO.Path.GetDirectoryName(loc);
+        //        if (!System.IO.Directory.Exists(loc))
+        //        {
+        //            System.IO.Directory.CreateDirectory(dirname);
+        //        }
 
+        //        using (BinaryWriter w = new BinaryWriter((Stream)File.Open(loc, FileMode.Create)))
+        //        {
+        //            BinUtils.WriteString(Globals.ProgramVersion, w);
+        //            BinUtils.WriteInt32(80085, w);
+        //            BinUtils.WriteInt16((short)8080, w);
+        //            BinUtils.WriteBlock(new byte[1] { (byte)1 }, w);
+        //            BinUtils.WriteFloat(3.14f, w);
+        //            BinUtils.WriteBool(true, w);
+        //            BinUtils.WriteBlock(new byte[5] { 5, 4, 3, 2, 1 }, w);
 
-                File.WriteAllText(loc, output);
-            }
-            catch (Exception ex)
-            {
-                Globals.MainForm.LogError("Failed to save XML File: " + ex.ToString());
-            }
-        }
-        public static ProjectFile LoadJson(string loc)
-        {
-            try
-            {
-                string text = System.IO.File.ReadAllText(loc);
-                return JsonConvert.DeserializeObject<ProjectFile>(text);
-            }
-            catch (Exception ex)
-            {
-                Globals.MainForm.LogError("Failed to save XML File: " + ex.ToString());
-            }
-            return null;
-        }
-        private bool SaveBinary(string loc, bool textures)
-        {
-            bool success = false;
-            try
-            {
-                string dirname = System.IO.Path.GetDirectoryName(loc);
-                if (!System.IO.Directory.Exists(loc))
-                {
-                    System.IO.Directory.CreateDirectory(dirname);
-                }
+        //            BinUtils.WriteInt64(IdGen, w);
+        //            BinUtils.WriteInt32(MaxUndo, w);
 
-                using (BinaryWriter w = new BinaryWriter((Stream)File.Open(loc, FileMode.Create)))
-                {
-                    BinUtils.WriteString(Globals.ProgramVersion, w);
-                    BinUtils.WriteInt32(80085, w);
-                    BinUtils.WriteInt16((short)8080, w);
-                    BinUtils.WriteBlock(new byte[1] { (byte)1 }, w);
-                    BinUtils.WriteFloat(3.14f, w);
-                    BinUtils.WriteBool(true, w);
-                    BinUtils.WriteBlock(new byte[5] { 5, 4, 3, 2, 1 }, w);
+        //            BinUtils.WriteString(ProjectName, w);
 
-                    BinUtils.WriteInt64(IdGen, w);
-                    BinUtils.WriteInt32(MaxUndo, w);
+        //            string version = Globals.ProgramVersion;
 
-                    BinUtils.WriteString(ProjectName, w);
+        //            WriteGroup<ImageResource>("ImageResources", Images, w, version);
+        //            WriteGroup<Sprite>("Sprites", Sprites, w, version);
+        //            WriteGroup<TileMap>("TileMaps", Maps, w, version);
+        //            //**Other file stuff
 
-                    string version = Globals.ProgramVersion;
+        //            ValidateFileWaypoint("EndOfFile", null, w);
+        //            ClearChanged();
+        //        }
 
-                    WriteGroup<ImageResource>("ImageResources", Images, w, version);
-                    WriteGroup<Sprite>("Sprites", Sprites, w, version);
-                    WriteGroup<TileMap>("TileMaps", Maps, w, version);
-                    //**Other file stuff
+        //        success = true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Globals.MainForm.LogError("Failed to load IWP Project file binary: " + ex.ToString());
+        //    }
+        //    return success;
+        //}
+        //private bool LoadBinary(string loc)
+        //{
+        //    bool success = true;
+        //    try
+        //    {
+        //        using (BinaryReader r = new BinaryReader((Stream)File.Open(loc, FileMode.Open)))
+        //        {
+        //            string version = BinUtils.ReadString(r);
 
-                    ValidateFileWaypoint("EndOfFile", null, w);
-                    ClearChanged();
-                }
+        //            if (version != Globals.ProgramVersion)
+        //            {
+        //                string str = "Note: This was created with an older version. " +
+        //                    version + ".  Press 'OK' to upgrade to version " +
+        //                    Globals.ProgramVersion + ".";
 
-                success = true;
-            }
-            catch (Exception ex)
-            {
-                Globals.MainForm.LogError("Failed to load IWP Project file binary: " + ex.ToString());
-            }
-            return success;
-        }
-        private bool LoadBinary(string loc)
-        {
-            bool success = true;
-            try
-            {
-                using (BinaryReader r = new BinaryReader((Stream)File.Open(loc, FileMode.Open)))
-                {
-                    string version = BinUtils.ReadString(r);
+        //                Globals.MainForm.LogError(str);
 
-                    if (version != Globals.ProgramVersion)
-                    {
-                        string str = "Note: This was created with an older version. " +
-                            version + ".  Press 'OK' to upgrade to version " +
-                            Globals.ProgramVersion + ".";
+        //                Globals.ShowError(str, "Upgrade Notification");
+        //            }
+        //            BinUtils.ReadInt32(r);
+        //            BinUtils.ReadInt16(r);
+        //            BinUtils.ReadBlock(1, r);
+        //            BinUtils.ReadFloat(r);
+        //            BinUtils.ReadBool(r);
+        //            BinUtils.ReadBlock(5, r);
 
-                        Globals.MainForm.LogError(str);
+        //            if (Convert.ToDouble(version) > 0.01)
+        //            {
+        //                IdGen = BinUtils.ReadInt64(r);
+        //                MaxUndo = BinUtils.ReadInt32(r);
+        //            }
 
-                        Globals.ShowError(str, "Upgrade Notification");
-                    }
-                    BinUtils.ReadInt32(r);
-                    BinUtils.ReadInt16(r);
-                    BinUtils.ReadBlock(1, r);
-                    BinUtils.ReadFloat(r);
-                    BinUtils.ReadBool(r);
-                    BinUtils.ReadBlock(5, r);
+        //            ProjectName = BinUtils.ReadString(r);
 
-                    if (Convert.ToDouble(version) > 0.01)
-                    {
-                        IdGen = BinUtils.ReadInt64(r);
-                        MaxUndo = BinUtils.ReadInt32(r);
-                    }
+        //            ReadGroup<ImageResource>("ImageResources", Images, r, version);
+        //            ReadGroup<Sprite>("Sprites", Sprites, r, version);
+        //            ReadGroup<TileMap>("TileMaps", Maps, r, version);
 
-                    ProjectName = BinUtils.ReadString(r);
+        //            ValidateFileWaypoint("EndOfFile", r, null);
+        //            success = true;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Globals.MainForm.LogError("Failed to load file binary " + ex.ToString());
+        //        success = false;
+        //    }
+        //    return success;
+        //}
+        //private void ReadGroup<T>(string groupname, List<T> group, BinaryReader r, string version) where T : ResourceBase
+        //{
+        //    ValidateFileWaypoint(groupname, r, null);
 
-                    ReadGroup<ImageResource>("ImageResources", Images, r, version);
-                    ReadGroup<Sprite>("Sprites", Sprites, r, version);
-                    ReadGroup<TileMap>("TileMaps", Maps, r, version);
+        //    group = new List<T>();
+        //    int count = BinUtils.ReadInt32(r);
+        //    for (int i = 0; i < count; ++i)
+        //    {
+        //        T x = (T)Activator.CreateInstance(typeof(T), new object[] { this, -1 });
 
-                    ValidateFileWaypoint("EndOfFile", r, null);
-                    success = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                Globals.MainForm.LogError("Failed to load file binary " + ex.ToString());
-                success = false;
-            }
-            return success;
-        }
-        private void ReadGroup<T>(string groupname, List<T> group, BinaryReader r, string version) where T : ResourceBase
-        {
-            ValidateFileWaypoint(groupname, r, null);
+        //        x.Deserialize( r, version);
+        //        group.Add(x);
+        //    }
+        //}
+        //private void WriteGroup<T>(string groupname, List<T> group, BinaryWriter w, string version) where T : ResourceBase
+        //{
+        //    ValidateFileWaypoint(groupname, null, w);
 
-            group = new List<T>();
-            int count = BinUtils.ReadInt32(r);
-            for (int i = 0; i < count; ++i)
-            {
-                T x = (T)Activator.CreateInstance(typeof(T), new object[] { this, -1 });
-
-                x.Deserialize( r, version);
-                group.Add(x);
-            }
-        }
-        private void WriteGroup<T>(string groupname, List<T> group, BinaryWriter w, string version) where T : ResourceBase
-        {
-            ValidateFileWaypoint(groupname, null, w);
-
-            BinUtils.WriteInt32(group.Count, w);
-            foreach (T x in group)
-            {
-                x.Serialize(w, version);
-            }
-        }
+        //    BinUtils.WriteInt32(group.Count, w);
+        //    foreach (T x in group)
+        //    {
+        //        x.Serialize(w, version);
+        //    }
+        //}
     }
 }

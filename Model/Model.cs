@@ -17,7 +17,7 @@ namespace Monoedit
         Error,
         NoChanges,
     }
-    public class Model
+    public class Model3D
     {
         public string Name { get; set; }
         public string BlendFile { get; set; }

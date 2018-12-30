@@ -21,7 +21,7 @@ namespace Monoedit
         [JsonProperty]
         public float Origin_Y { get; set; } = 0.0f;
         [JsonProperty]
-        public Model Model { get; set; } = null;
+        public Model3D Model { get; set; } = null;
 
         public Sprite() { }
         public Sprite(Int64 id) : base(id) { }

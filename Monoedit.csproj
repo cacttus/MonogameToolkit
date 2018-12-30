@@ -62,20 +62,34 @@
     <Compile Include="Model\BlendFileInfo.cs" />
     <Compile Include="Model\BlendFileObject.cs" />
     <Compile Include="Model\GameObject.cs" />
+    <Compile Include="Model\JsonFile.cs" />
     <Compile Include="Model\Model.cs" />
     <Compile Include="Model\ModelRenderParameters.cs" />
+    <Compile Include="Model\MonoEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Model\MonoEditForm.Designer.cs">
+      <DependentUpon>MonoEditForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Model\OptionsFile.cs" />
     <Compile Include="Model\PackedTexture.cs" />
-    <Compile Include="View\AddEditItem.cs">
+    <Compile Include="View\AddEditForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\AddEditItem.Designer.cs">
-      <DependentUpon>AddEditItem.cs</DependentUpon>
+    <Compile Include="View\AddEditForm.Designer.cs">
+      <DependentUpon>AddEditForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\CustomMessageBox.cs">
+    <Compile Include="View\AddEditImage.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\CustomMessageBox.Designer.cs">
-      <DependentUpon>CustomMessageBox.cs</DependentUpon>
+    <Compile Include="View\AddEditImage.Designer.cs">
+      <DependentUpon>AddEditImage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\CustomMessageBoxForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\CustomMessageBoxForm.Designer.cs">
+      <DependentUpon>CustomMessageBoxForm.cs</DependentUpon>
     </Compile>
     <Compile Include="View\MainForm.cs">
       <SubType>Form</SubType>
@@ -100,24 +114,48 @@
     <Compile Include="Model\TileMap.cs" />
     <Compile Include="Model\UndoManager.cs" />
     <Compile Include="Model\WindowManager.cs" />
-    <Compile Include="View\ProgressWindow.cs">
+    <Compile Include="View\NewProjectForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\ProgressWindow.Designer.cs">
-      <DependentUpon>ProgressWindow.cs</DependentUpon>
+    <Compile Include="View\NewProjectForm.Designer.cs">
+      <DependentUpon>NewProjectForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\OptionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\OptionsForm.Designer.cs">
+      <DependentUpon>OptionsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\ProgressForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\ProgressForm.Designer.cs">
+      <DependentUpon>ProgressForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\SelectFile.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\SelectFile.Designer.cs">
+      <DependentUpon>SelectFile.cs</DependentUpon>
     </Compile>
     <Compile Include="View\SpriteListView.cs" />
-    <Compile Include="View\CollectionEditorWIndow.cs">
+    <Compile Include="View\CollectionEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\CollectionEditorWIndow.Designer.cs">
-      <DependentUpon>CollectionEditorWIndow.cs</DependentUpon>
+    <Compile Include="View\CollectionEditorForm.Designer.cs">
+      <DependentUpon>CollectionEditorForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="View\AddEditItem.resx">
-      <DependentUpon>AddEditItem.cs</DependentUpon>
+    <EmbeddedResource Include="Model\MonoEditForm.resx">
+      <DependentUpon>MonoEditForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\CustomMessageBox.resx">
-      <DependentUpon>CustomMessageBox.cs</DependentUpon>
+    <EmbeddedResource Include="View\AddEditForm.resx">
+      <DependentUpon>AddEditForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\AddEditImage.resx">
+      <DependentUpon>AddEditImage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\CustomMessageBoxForm.resx">
+      <DependentUpon>CustomMessageBoxForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -130,12 +168,22 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="View\ProgressWindow.resx">
-      <DependentUpon>ProgressWindow.cs</DependentUpon>
+    <EmbeddedResource Include="View\NewProjectForm.resx">
+      <DependentUpon>NewProjectForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\CollectionEditorWIndow.resx">
-      <DependentUpon>CollectionEditorWIndow.cs</DependentUpon>
+    <EmbeddedResource Include="View\OptionsForm.resx">
+      <DependentUpon>OptionsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\ProgressForm.resx">
+      <DependentUpon>ProgressForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\CollectionEditorForm.resx">
+      <DependentUpon>CollectionEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\SelectFile.resx">
+      <DependentUpon>SelectFile.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -151,5 +199,26 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="rsc\dark\appbar.add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="rsc\dark\appbar.cancel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="rsc\dark\appbar.folder.open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="rsc\light\appbar.add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="rsc\light\appbar.cancel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="rsc\light\appbar.folder.open.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /s /e $(ProjectDir)rsc\* $(ProjectDir)$(OutDir)\rsc</PostBuildEvent>
+  </PropertyGroup>
 </Project>
