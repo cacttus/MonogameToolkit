@@ -51,19 +51,7 @@ namespace Monoedit
                 MarkChanged();
             }
         }
-        //This path chanes when we load
-        [JsonIgnore]
-        public string LoadedOrSavedProjectFileName
-        {
-            get
-            {
-                return _strLoadedOrSavedProjectFileName;
-            }
-            set
-            {
-                _strLoadedOrSavedProjectFileName = value; MarkChanged();
-            }
-        }
+
         [JsonProperty]
         public List<ImageResource> Images
         {
@@ -125,6 +113,18 @@ namespace Monoedit
         {
         }
 
+        public string Path()
+        {
+            string r = System.IO.Path.GetDirectoryName(this.LoadedOrSavedFileName);
+            return r;
+        }
+
+        public string ImagesPath()
+        {
+            string r = System.IO.Path.Combine(Path(), "Images");
+            return r;
+        }
+
         public ResourceBase GetResourceById(Int64 id)
         {
             ResourceBase r;
@@ -152,7 +152,7 @@ namespace Monoedit
 
         public string GetProjectRoot()
         {
-            return System.IO.Path.GetDirectoryName(LoadedOrSavedProjectFileName);
+            return System.IO.Path.GetDirectoryName(LoadedOrSavedFileName);
         }
 
         public string GetImageResourcePath()
@@ -190,7 +190,7 @@ namespace Monoedit
                 if (s.Equals(test) == false)
                 {
                     //Error*!
-                    Globals.MainForm.LogError("File load failed: Validation failed at '" + s + " (validation value was " + test + ").");
+                    Globals.LogError("File load failed: Validation failed at '" + s + " (validation value was " + test + ").");
                 }
             }
             else if (w != null)
@@ -255,7 +255,7 @@ namespace Monoedit
         //    }
         //    catch (Exception ex)
         //    {
-        //        Globals.MainForm.LogError("Failed to save XML File: " + ex.ToString());
+        //        Globals.LogError("Failed to save XML File: " + ex.ToString());
         //    }
         //}
 
@@ -271,7 +271,7 @@ namespace Monoedit
         //    }
         //    catch (Exception ex)
         //    {
-        //        Globals.MainForm.LogError("Failed to Load XML File: " + ex.ToString());
+        //        Globals.LogError("Failed to Load XML File: " + ex.ToString());
         //    }
         //    return null;
         //}
@@ -284,7 +284,7 @@ namespace Monoedit
         //    }
         //    catch (Exception ex)
         //    {
-        //        Globals.MainForm.LogError("Failed to save XML File: " + ex.ToString());
+        //        Globals.LogError("Failed to save XML File: " + ex.ToString());
         //    }
         //}
         //public static ProjectFile LoadJson(string loc)
@@ -296,7 +296,7 @@ namespace Monoedit
         //    }
         //    catch (Exception ex)
         //    {
-        //        Globals.MainForm.LogError("Failed to save XML File: " + ex.ToString());
+        //        Globals.LogError("Failed to save XML File: " + ex.ToString());
         //    }
         //    return null;
         //}
@@ -341,7 +341,7 @@ namespace Monoedit
         //    }
         //    catch (Exception ex)
         //    {
-        //        Globals.MainForm.LogError("Failed to load IWP Project file binary: " + ex.ToString());
+        //        Globals.LogError("Failed to load IWP Project file binary: " + ex.ToString());
         //    }
         //    return success;
         //}
@@ -360,7 +360,7 @@ namespace Monoedit
         //                    version + ".  Press 'OK' to upgrade to version " +
         //                    Globals.ProgramVersion + ".";
 
-        //                Globals.MainForm.LogError(str);
+        //                Globals.LogError(str);
 
         //                Globals.ShowError(str, "Upgrade Notification");
         //            }
@@ -389,7 +389,7 @@ namespace Monoedit
         //    }
         //    catch (Exception ex)
         //    {
-        //        Globals.MainForm.LogError("Failed to load file binary " + ex.ToString());
+        //        Globals.LogError("Failed to load file binary " + ex.ToString());
         //        success = false;
         //    }
         //    return success;

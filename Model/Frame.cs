@@ -46,7 +46,7 @@ namespace Monoedit
             Bitmap b = null;
             if (ImageResource == null)
             {
-                Globals.MainForm.LogError("Frame had no image resource");
+                Globals.LogError("Frame had no image resource");
             }
             else
             {

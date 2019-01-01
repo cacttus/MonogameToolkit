@@ -133,7 +133,7 @@
 //                    {
 //                        if (tb.OnClose() == false)
 //                        {
-//                            Globals.MainForm.LogError("tried to cancel close action of a modal window - can't do that.");
+//                            Globals.LogError("tried to cancel close action of a modal window - can't do that.");
 //                            ///throw new NotImplementedException();//Shouldn't call this
 //                        }
 //                    }
@@ -145,7 +145,7 @@
 //                    }
 //                    else
 //                    {
-//                        Globals.MainForm.LogError("Couldn't find modal window!", true);
+//                        Globals.LogError("Couldn't find modal window!", true);
 //                    }
 //                };
 
@@ -164,7 +164,7 @@
 //                }
 //                else
 //                {
-//                    Globals.MainForm.LogError("Content window was not a toolwindow");
+//                    Globals.LogError("Content window was not a toolwindow");
 //                }
 
 //            }
@@ -311,7 +311,7 @@
 //            }
 //            else
 //            {
-//                Globals.MainForm.LogError("Couldn't close window - widnow not found.", true);
+//                Globals.LogError("Couldn't close window - widnow not found.", true);
 //            }
 //        }
 //        public bool GetModal(int iWindowId, out ToolWindowBase tb, out MahApps.Metro.SimpleChildWindow.ChildWindow cw)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,14 @@ using Newtonsoft.Json.Converters;
 
 namespace Monoedit
 {
+    public enum StartupOption
+    {
+        [Description("None")]
+        None,
+        [Description("Load Last Project File")]
+        LoadLastProject
+    }
+
     public class OptionsFile : JsonFile<OptionsFile>
     {
         [JsonConverter(typeof(StringEnumConverter))]
@@ -16,6 +25,15 @@ namespace Monoedit
 
         [JsonConverter(typeof(StringEnumConverter))]
         public MetroFramework.MetroThemeStyle Theme { get; set; } = MetroFramework.MetroThemeStyle.Dark;
+
+        [JsonProperty]
+        public string AutoLoadFilePath = "";
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        public StartupOption StartupOption = StartupOption.None;
+
+        [JsonProperty]
+        public List<string> RecentFiles = new List<string>();
 
         public string FileLoc()
         {

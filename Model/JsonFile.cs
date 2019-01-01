@@ -9,27 +9,9 @@ using Newtonsoft.Json;
 namespace Monoedit
 {
     //Fucky shit right here.
-    public class JsonFile <T> where T : JsonFile<T>
+    public class JsonFile <T> : MonoEditFile where T : JsonFile<T>
     {
-        [JsonIgnore]
-        protected string LoadedOrSavedFileName { get; set; } = "";
-
-        public virtual void PostLoad()
-        {
-            //Override to post load stuff
-        }
-
-        public T CreateOrLoad(string loc)
-        {
-            if (!File.Exists(loc))
-            {
-                Save(loc);
-            }
-
-            return Load(loc);
-        }
-
-        public void Save(string loc)
+        public override void SaveAs(string loc)
         {
             System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
             sw.Start();
@@ -43,14 +25,14 @@ namespace Monoedit
                 }
                 catch (Exception ex)
                 {
-                    Globals.MainForm.LogError("Failed to save Json File: " + ex.ToString());
+                    Globals.LogError("Failed to save Json File: " + ex.ToString());
                 }
             }
             sw.Stop();
             Globals.MainForm.SetStatus("Saved '" + loc + "' in " + Globals.TimeSpanToString(sw.Elapsed));
         }
 
-        public static T Load(string loc)
+        public override object Load(string loc)
         {
             T ret = null;
             try
@@ -69,7 +51,7 @@ namespace Monoedit
             }
             catch (Exception ex)
             {
-                Globals.MainForm.LogError("Failed to save Json File: " + ex.ToString());
+                Globals.LogError("Failed to save Json File: " + ex.ToString());
             }
             return ret;
         }

@@ -100,7 +100,7 @@ namespace Monoedit
                     {
                         if (!ProjectFile.Images.Contains(data as ImageResource))
                         {
-                            Globals.MainForm.LogError("Image Resource was not found for undoing!");
+                            Globals.LogError("Image Resource was not found for undoing!");
                         }
                         ProjectFile.Images.Remove(data as ImageResource);
                       //  Globals.MainForm.WindowManager.RefreshAllWindows();
@@ -115,7 +115,7 @@ namespace Monoedit
                         {
                             //Error
                             System.Diagnostics.Debugger.Break();
-                            Globals.MainForm.LogError("Image Resource was already found for undoing!");
+                            Globals.LogError("Image Resource was already found for undoing!");
                         }
                         ProjectFile.Images.Add(data as ImageResource);
                       //  Globals.MainForm.WindowManager.RefreshAllWindows();

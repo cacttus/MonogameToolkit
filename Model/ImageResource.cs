@@ -111,7 +111,7 @@ namespace Monoedit
         {
             if (f == null)
             {
-                Globals.MainForm.LogError("Given Frame was null");
+                Globals.LogError("Given Frame was null");
                 return Globals.GetDefaultXImage();
             }
             return GetSubImageForRect(GetRectForFrame(f), f.ImageResourceId);

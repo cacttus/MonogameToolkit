@@ -19,459 +19,13 @@ using MetroFramework;
 
 namespace Monoedit
 {
-    public enum LanguageCode
+    public static class Globals
     {
-        English = 0,
-        Spanish = 1,
-    }
-    public class Phrase
-    {
-        public Dictionary<LanguageCode, string> Text = new Dictionary<LanguageCode, string>();
-        public int PhraseId { get; } = 0;//English phrase id 
-        public Phrase(string english, string spanish)
-        {
-
-
-            Text.Add(LanguageCode.English, english);
-            Text.Add(LanguageCode.Spanish, spanish);
-            PhraseId = english.GetHashCode();
-            Translator.AddPhrase(this);
-        }
-        //public Phrase(string no_translation_available)
-        //{
-        //    //Do not add the phrase - this constructor is only for untranslated items
-        //    foreach (LanguageCode code in Enum.GetValues(typeof(LanguageCode)))
-        //    {
-        //        Text.Add(code, no_translation_available);
-        //    }
-        //    PhraseId = no_translation_available.GetHashCode();
-        //    //Do not add the phrase - this constructor is only for untranslated items
-        //}
-        public string Trans(LanguageCode c)
-        {
-            string trans = "";
-            if (Text.TryGetValue(c, out trans) == false)
-            {
-                throw new Exception("Failure: all Phrases must have some value (or empty string) for each language code ");
-            }
-            return trans;
-
-        }
-
-    }
-
-    public class Phrases
-    {
-        //This does some crazy reverse lookups with a host of dictionaries for performance.
-        public static Dictionary<LanguageCode, Dictionary<int, Phrase>> Lexicon = new Dictionary<LanguageCode, Dictionary<int, Phrase>>();
-        public static Phrase AddItemToCollection = new Phrase("Add an item to the collection.", "Añadir un artículo a la colección.");
-        public static Phrase RemoveItemToCollection = new Phrase("Remove an item from the collection.", "Eliminar un artículo de la colección.");
-        public static Phrase Ok = new Phrase("Ok", "Vale");
-        public static Phrase Cancel = new Phrase("Cancel", "Cancelar");
-        public static Phrase File = new Phrase("File", "Limar");
-        public static Phrase Exit = new Phrase("Exit", "Salir");
-        public static Phrase Language = new Phrase("Language", "Lengua");
-        public static Phrase FolderDoesNotExist = new Phrase("Folder does not exist.", "La carpeta no existe.");
-        public static Phrase FileDoesNotExist = new Phrase("File does not exist.", "El archivo no existe.");
-        public static Phrase Options = new Phrase("Options", "Opciones");
-        public static Phrase View = new Phrase("View", "Ver");
-        public static Phrase Sprites = new Phrase("Sprites", "Duendes");
-        public static Phrase Objects = new Phrase("Objects", "Objetos");
-        public static Phrase Layers = new Phrase("Layers", "Capas");
-        public static Phrase Undo = new Phrase("Undo", "Deshacer");
-        public static Phrase Redo = new Phrase("Redo", "Rehacer");
-        public static Phrase Edit = new Phrase("Edit", "Editar");
-        public static Phrase Tools = new Phrase("Tools", "útiles");
-        public static Phrase Theme = new Phrase("Theme", "Tema");
-        public static Phrase Light = new Phrase("Light", "Ligero");
-        public static Phrase Dark = new Phrase("Dark", "Oscuro");
-        public static Phrase English = new Phrase("English", "Inglés");
-        public static Phrase Spanish = new Phrase("Spanish", "Español");
-        public static Phrase Error = new Phrase("Error", "Error");
-        public static Phrase Info = new Phrase("Info", "Información");
-        public static Phrase New = new Phrase("&New", "&Nuevo");
-        public static Phrase Open = new Phrase("&Open", "&Abierto");
-        public static Phrase Save = new Phrase("&Save", "&Guardar");
-        public static Phrase SaveAs = new Phrase("&Save As..", "&Guardar Como..");
-        public static Phrase AddEdit = new Phrase("Add/Edit", "Añadir/Editar.");
-
-    }
-
-    //Applies global/General translation.
-    public class Translator
-    {
-        public static string GetEnglish(string lang)
-        {
-            Phrase p = FindPhrase(lang, Globals.MainForm.OptionsFile.SelectedLanguage);
-            if (p != null)
-            {
-                return p.Trans(LanguageCode.English);
-            }
-            return lang;
-        }
-        private static void AddPhraseForLang(LanguageCode code, Phrase p)
-        {
-            Dictionary<int, Phrase> dict = null;
-            if (Phrases.Lexicon.TryGetValue(code, out dict) == false)
-            {
-                dict = new Dictionary<int, Phrase>();
-                Phrases.Lexicon.Add(code, dict);
-            }
-
-            string trans = p.Trans(code);
-            int hash = trans.GetHashCode();
-            if (dict.Keys.Contains(hash))
-            {
-                //You'll get this if you have untranslated phrases. 
-                //Forget empty strings.
-                if (trans.Length > 0)
-                {
-                    Globals.MainForm.LogError("The phrase " + p + " was already found in the dictionary.");
-                }
-            }
-            dict.Add(hash, p);
-        }
-
-        public static void AddPhrase(Phrase p)
-        {
-            //Don't call this directly, instead create a new phrase manuall.
-            foreach (LanguageCode val in Enum.GetValues(typeof(LanguageCode)))
-            {
-                AddPhraseForLang(val, p);
-            }
-        }
-
-        public static Phrase FindPhrase(string in_selected_lang, LanguageCode code)
-        {
-            //For the currently selected language find the translated phrase.
-            string err = "No translation for '"
-                    + in_selected_lang
-                    + "' exists for the currently seelcted lang: '"
-                    + code.ToString() + "'.";
-
-            Dictionary<int, Phrase> dict = null;
-            if (Phrases.Lexicon.TryGetValue(code, out dict) == false)
-            {
-                Globals.MainForm.LogError(err);
-
-                //Return bad phrase.
-                return null;
-            }
-
-            Phrase trans = null;
-            if (dict.TryGetValue(in_selected_lang.GetHashCode(), out trans) == false)
-            {
-                Globals.MainForm.LogError(err);
-                return null;
-            }
-
-            return trans;
-        }
-
-        private static bool SwitchingLanguage = false;
-        public static void SwitchLanguage(LanguageCode newCode)
-        {
-            if (SwitchingLanguage == false)
-            {
-                SwitchingLanguage = true;
-
-                TranslateUI(Globals.MainForm, Globals.MainForm.OptionsFile.SelectedLanguage, newCode);
-                
-                foreach (MetroForm f in Globals.MainForm.Forms)
-                {
-                    if (f.Visible)
-                    {
-                        TranslateUI(f, Globals.MainForm.OptionsFile.SelectedLanguage, newCode);
-                    }
-                }
-
-                Globals.MainForm.OptionsFile.SelectedLanguage = newCode;
-            }
-            SwitchingLanguage = false;
-        }
-
-        public static void TranslateUI(Control cont, LanguageCode from, LanguageCode to)
-        {
-            //Translates the entire static form.
-            try
-            {
-                TranslateGenericControl(cont, from, to);
-
-                //Translates all elements on the page who have a "text" element
-                foreach (Control child in cont.Controls)
-                {
-                    TranslateUI(child, from, to);
-                }
-
-                if (cont as MenuStrip != null)
-                {
-                    foreach (object child in (cont as MenuStrip).Items)
-                    {
-                        if (child as ToolStripMenuItem != null)
-                        {
-                            TranslateUI(child as ToolStripMenuItem, from, to);
-                        }
-                        else
-                        {
-                            Globals.MainForm.LogError("Failed to translate a menu item - no cast availabele for type '"
-                                + child.GetType().ToString() + "'");
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Globals.MainForm.LogError(ex.ToString());
-            }
-        }
-
-        public static void TranslateUI(ToolStripMenuItem cont, LanguageCode from, LanguageCode to)
-        {
-            //Translates an entire UI of toolstripmenuitem
-            try
-            {
-                TranslateGenericControl(cont, from, to);
-
-                foreach (ToolStripMenuItem child in cont.DropDownItems)
-                {
-                    TranslateUI(child, from, to);
-                }
-            }
-            catch (Exception ex)
-            {
-                Globals.MainForm.LogError(ex.ToString());
-            }
-        }
-
-        private static void TranslateGenericControl(object cont, LanguageCode from, LanguageCode to)
-        {
-            //Translates a control if it has a "text" field.
-            if (cont == null)
-            {
-                return;
-            }
-
-
-            //Try to translate combobox items.
-            if (cont as ComboBox != null)
-            {
-                try
-                {
-                    string selected = "";
-                    if ((cont as ComboBox).SelectedItem as string != null)
-                    {
-                        selected = (cont as ComboBox).SelectedItem as string;
-                    }
-
-                    List<string> data = new List<string>();
-                    foreach (object item in (cont as ComboBox).Items)
-                    {
-                        if (item as String != null)
-                        {
-                            data.Add(Translate(item as string, from, to));
-                        }
-                    }
-
-                (cont as ComboBox).Items.Clear();
-                    foreach (string item in data)
-                    {
-                        (cont as ComboBox).Items.Add(item);
-                    }
-
-                    //Restore selected item
-                    (cont as ComboBox).SelectedItem = selected;
-
-
-                }
-                catch (Exception ex)
-                {
-                    Globals.MainForm.LogError("Error translating combobox " + ex.ToString());
-                }
-            }
-
-            //Generic "Text" Property translation
-            if (cont.GetType().GetProperty("Text") != null)
-            {
-                string txt = cont.GetType().GetProperty("Text").GetValue(cont, null) as string;
-
-                if (!string.IsNullOrEmpty(txt))
-                {
-                    string trans = Translator.Translate(txt, from, to);
-
-                    cont.GetType().InvokeMember("Text",
-                        BindingFlags.Instance | BindingFlags.Public | BindingFlags.SetProperty,
-                        Type.DefaultBinder, cont, new object[] { trans });
-
-                    
-                }
-            }
-
-            //A Refresh is required for Metro UI to update the header
-            if (cont as MainForm != null)
-            {
-                (cont as MainForm).Refresh();
-            }
-        }
-
-        public static string Translate(string in_english)
-        {
-            return Translate(in_english, LanguageCode.English, Globals.MainForm.OptionsFile.SelectedLanguage);
-        }
-        public static string Translate(string in_selected_lang, LanguageCode from, LanguageCode to)
-        {
-            Phrase p = FindPhrase(in_selected_lang, from);
-            if (p == null)
-            {
-                return in_selected_lang;
-            }
-            return Translate(p, to);
-        }
-
-        public static string Translate(Phrase p, LanguageCode? toLang = null)
-        {
-            if (p == null)
-            {
-                return "";
-            }
-            if (toLang == null)
-            {
-                toLang = Globals.MainForm.OptionsFile.SelectedLanguage;
-            }
-
-            if (p.Text == null || p.Text.Count <= (int)toLang)
-            {
-                Globals.MainForm.LogError("Phrase " + p.PhraseId + " : '"
-                    + ((p.Text != null && p.Text.Count > 0) ? p.Text[0] : "No Text Avail")
-                    + "', didn't have a translated item for code : " + toLang.ToString());
-            }
-
-            return p.Trans(toLang.Value);
-        }
-
-    }
-
-
-    /// <summary>
-    /// Applies themes generally to MetroUI controls.
-    /// </summary>
-    public static class ThemeApplier
-    {
-        public static Color MenuColorBackDark = Color.FromArgb(255, 64, 64, 64);
-        public static Color MenuColorForeDark = Color.FromArgb(255, 224, 224, 224);
-
-        public static Color MenuColorBackLight = Color.FromArgb(255, 224, 224, 224);
-        public static Color MenuColorForeLight = Color.FromArgb(255, 17, 17, 17);
-
-        public static void SetBackgroundImage(Control a, string loc)
-        {
-            string dir = Assembly.GetEntryAssembly().Location;
-
-            dir = Path.GetDirectoryName(dir);
-
-            string theme = "dark";
-            if (Globals.MainForm.OptionsFile.Theme == MetroThemeStyle.Dark)
-            {
-                theme = "dark";
-            }
-            else
-            {
-                theme = "light";
-            }
-            dir = Path.Combine(dir, "rsc", theme, loc);
-
-            try
-            {
-                a.BackgroundImage = new Bitmap(dir);
-                a.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-
-            }
-            catch (Exception ex)
-            {
-                Globals.MainForm.LogError("Failed to load image '" + dir + "': " + ex.ToString());
-            }
-        }
-
-        public static Color ForeColor()
-        {
-            if (Globals.MainForm.OptionsFile.Theme == MetroThemeStyle.Dark)
-            {
-                return MenuColorForeDark;
-            }
-            else
-            {
-                return MenuColorForeLight;
-            }
-        }
-        public static Color BackColor()
-        {
-            if (Globals.MainForm.OptionsFile.Theme == MetroThemeStyle.Dark)
-            {
-                return MenuColorBackDark;
-            }
-            else
-            {
-                return MenuColorBackLight;
-            }
-        }
-
-        public static void SwitchTheme(MetroFramework.MetroThemeStyle theme)
-        {
-            Globals.MainForm.OptionsFile.Theme = theme;
-            Globals.MainForm.ApplyStyle();
-            //ThemeUI(Globals.MainForm);
-            //Globals.MainForm.MainForm_Load(new object(), new EventArgs());
-            foreach (MonoEditForm f in Globals.MainForm.Forms)
-            {
-                f.ApplyStyle();
-                //ThemeUI(f);
-            }
-        }
-
-
-    }
-
-    public class Globals
-    {
-
+        #region Public: Props
         private static MainForm _objMainForm = null;
-        public static MainForm MainForm { get { return _objMainForm; } }
-        public static void SetMainWindow(MainForm w) { _objMainForm = w; }
-
-
-
-        public static void SetTooltip(Control ctl, Phrase p, int show_duration = 3000)
-        {
-            ctl.MouseHover += (object xsender, EventArgs xe) =>
-            {
-                MetroFramework.Components.MetroToolTip t = new MetroFramework.Components.MetroToolTip();
-                t.ReshowDelay = 1000;
-                t.Theme = MetroFramework.MetroThemeStyle.Dark;
-                t.UseFading = true;
-                t.AutoPopDelay = show_duration;
-                t.InitialDelay = 1500;
-                t.IsBalloon = true;
-                t.Show(Translator.Translate(p, Globals.MainForm.OptionsFile.SelectedLanguage), ctl);
-            };
-
-        }
-
-        public static void SwapControl(Control a, Control b)
-        {
-            b.Width = a.Width;
-            b.Height = a.Height;
-            b.Dock = a.Dock;
-            b.Anchor = a.Anchor;
-
-            Control parent = a.Parent;
-            if (parent != null)
-            {
-                parent.Controls.Remove(a);
-                parent.Controls.Add(b);
-            }
-
-        }
         //public const string ProgramVersion = "0.01";
-        public const string ProgramVersion = "0.02";
+        public const string ProgramVersion = "0.01";
+        public const string ProgramName = "Monogame Toolkit";
         public static double GetProgramVersion()
         {
             double d = 0;
@@ -481,43 +35,18 @@ namespace Monoedit
         public const string ApplicationTitle = "Indieworks";
 
         public static string SupportedLoadSpriteImageFilter = "Image Files (*.png;*.bmp;*.gif;*.jpg)|*.png;*.bmp;*.gif;*.jpg|All files (*.*)|*.*";
+        public static string SupportedLoadSpriteImageFilterDefault = "(*.png;)|*.png";
         public static string GifFilter = "Gif Files (*.gif)|*.gif;|All files (*.*)|*.*";
         public static string ExeFilter = "Exe Files (*.exe)|*.exe|All files (*.*)|*.*";
-        public static string ProjectExt = ".iwp";
+        public static string ProjectExt = ".json";
         public static string ProjectFilter = "Project Files (*" + ProjectExt + ")|*" + ProjectExt + "";
         public static string AllFilter = "All files (*.*)|*.*";
 
-
-        public static string GetEnumDescription(Enum value)
-        {
-            FieldInfo fi = value.GetType().GetField(value.ToString());
-
-            DescriptionAttribute[] attributes =
-                (DescriptionAttribute[])fi.GetCustomAttributes(
-                typeof(DescriptionAttribute),
-                false);
-
-            if (attributes != null &&
-                attributes.Length > 0)
-            {
-                return attributes[0].Description;
-            }
-
-            return value.ToString();
-
-        }
-
+        public static MainForm MainForm { get { return _objMainForm; } }
+        public static void SetMainWindow(MainForm w) { _objMainForm = w; }
         private static Random Random = new Random();
-        public static double RandomDouble(double min, double max)
-        {
-            if (min > max)
-            {
-                double tmp = max;
-                max = min;
-                min = tmp;
-            }
-            return min + (max - min) * Random.NextDouble();
-        }
+        #endregion
+
         #region File & Path IO
         public static bool PathIsDirectory(string path)
         {
@@ -678,7 +207,7 @@ namespace Monoedit
                 {
                     //blah
                     //blah
-                    Globals.MainForm.LogError("Normalize Path exception: " + ex.ToString());
+                    Globals.LogError("Normalize Path exception: " + ex.ToString());
                 }
 
                 return p;
@@ -762,6 +291,74 @@ namespace Monoedit
         }
         #endregion
 
+        #region Public: Static Methods
+        public static void SetTooltip(List<Control> ctls, Phrase p, int show_duration = 3000)
+        {
+            foreach(Control c in ctls)
+            {
+                SetTooltip(c, p, show_duration);
+            }
+        }
+        public static void SetTooltip(Control ctl, Phrase p, int show_duration = 3000)
+        {
+            ctl.MouseHover += (object xsender, EventArgs xe) =>
+            {
+                MetroFramework.Components.MetroToolTip t = new MetroFramework.Components.MetroToolTip();
+                t.ReshowDelay = 1000;
+                t.Theme = Globals.MainForm.OptionsFile.Theme;
+                t.UseFading = true;
+                t.AutoPopDelay = show_duration;
+                t.InitialDelay = 1500;
+                t.IsBalloon = true;
+                t.Show(Translator.Translate(p, Globals.MainForm.OptionsFile.SelectedLanguage), ctl);
+            };
+        }
+        public static void SwapControl(Control toRemove, Control toAdd)
+        {
+            toAdd.Top = toRemove.Top;
+            toAdd.Left = toRemove.Left;
+            toAdd.Width = toRemove.Width;
+            toAdd.Height = toRemove.Height;
+            toAdd.Dock = toRemove.Dock;
+            toAdd.Anchor = toRemove.Anchor;
+            
+
+            Control parent = toRemove.Parent;
+            if (parent != null)
+            {
+                parent.Controls.Remove(toRemove);
+                parent.Controls.Add(toAdd);
+            }
+
+        }
+        public static string GetEnumDescription(Enum value)
+        {
+            FieldInfo fi = value.GetType().GetField(value.ToString());
+
+            DescriptionAttribute[] attributes =
+                (DescriptionAttribute[])fi.GetCustomAttributes(
+                typeof(DescriptionAttribute),
+                false);
+
+            if (attributes != null &&
+                attributes.Length > 0)
+            {
+                return attributes[0].Description;
+            }
+
+            return value.ToString();
+
+        }
+        public static double RandomDouble(double min, double max)
+        {
+            if (min > max)
+            {
+                double tmp = max;
+                max = min;
+                min = tmp;
+            }
+            return min + (max - min) * Random.NextDouble();
+        }
         public static string TimeSpanToString(TimeSpan t)
         {
             string shortForm = "";
@@ -783,12 +380,15 @@ namespace Monoedit
             }
             return shortForm;
         }
-
         public static void ShowError(Phrase s, Form owner = null)
         {
             CustomMessageBox.Show(s, Phrases.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
         public static void ShowInfo(Phrase s, Form owner = null)
+        {
+            CustomMessageBox.Show(s, Phrases.Info, MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        public static void ShowInfo(string s, Form owner = null)
         {
             CustomMessageBox.Show(s, Phrases.Info, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -819,7 +419,7 @@ namespace Monoedit
                 }
                 catch (Exception ex)
                 {
-                    Globals.MainForm.LogError("Could nto find fiel: " + ex.ToString());
+                    Globals.LogError("Could nto find fiel: " + ex.ToString());
                     DefaultImage = new Bitmap(64, 64);
                 }
             }
@@ -833,7 +433,6 @@ namespace Monoedit
                 graphics.DrawImage((Image)srcBitmap, destRegion, srcRegion, GraphicsUnit.Pixel);
             }
         }
-
         public static byte[] Combine(byte[] a, byte[] b)
         {
             byte[] numArray = new byte[a.Length + b.Length];
@@ -841,7 +440,6 @@ namespace Monoedit
             Buffer.BlockCopy((Array)b, 0, (Array)numArray, a.Length, b.Length);
             return numArray;
         }
-
         public static string[] GetValidUserFolder(string initialdir, bool multiple)
         {
             using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
@@ -855,7 +453,12 @@ namespace Monoedit
             }
             return new string[0];
         }
-
+        public static string[] GetValidOpenSaveUserFile(IWin32Window owner, bool bSave,
+            string filter, string defaultext, string initialdir, bool multiple = false, string defaultName = "")
+        {
+            return GetValidOpenSaveUserFile(owner,  bSave,
+             filter, filter,  defaultext,  initialdir,  multiple ,  defaultName);
+        }
         public static string[] GetValidOpenSaveUserFile(IWin32Window owner, bool bSave, string saveFilter,
             string loadFilter, string defaultext, string initialdir, bool multiple = false, string defaultName = "")
         {
@@ -892,12 +495,18 @@ namespace Monoedit
             }
             return fileDialog.FileNames;
         }
-
-        public static void SelectCboItem(System.Windows.Forms.ComboBox cb, string s, int defIndex)
+        public static void SelectCboItem(System.Windows.Forms.ComboBox cb, string selected, int defIndex)
         {
+            //Translate s
+           string selected_trans = Translator.Translate(selected);
             for (int i = 0; i < cb.Items.Count; ++i)
             {
-                if ((cb.Items[i] as string).Equals(s))
+                //Do some translation voodoo
+                string item = (cb.Items[i] as string);
+                Phrase p = Translator.FindPhrase(item,  Globals.MainForm.OptionsFile.SelectedLanguage);
+                string item_trans = Translator.Translate(p, Globals.MainForm.OptionsFile.SelectedLanguage);
+
+                if (item_trans.Equals(selected_trans))
                 {
                     cb.SelectedIndex = i;
                     return;
@@ -905,14 +514,99 @@ namespace Monoedit
             }
             if (cb.Items.Count > 0)
             {
+                Globals.LogError("Could not find combobox item: " + selected);
                 if (defIndex < cb.Items.Count)
                 {
                     cb.SelectedIndex = defIndex;
                 }
-
             }
         }
+        public static void BottomFolder(string path, out string parents, out string childfolder)
+        {
+            parents = "";
+            childfolder = "";
+            //Bottom folder of path, or top folder..
+            path = path.TrimEnd('/', '\\');
+            int a = path.LastIndexOf('/');
+            int b = path.LastIndexOf('\\');
+            if (b > a)
+            {
+                a = b;
+            }
+            a++;//remove the first /
+            if (a != -1 && a < path.Length)
+            {
+                childfolder = path.Substring(a);
+                parents = path.Substring(0, a);
+            }
+        }
+        public static bool FilePathHasInvalidChars(string path)
+        {
+            return (!string.IsNullOrEmpty(path) && path.IndexOfAny(System.IO.Path.GetInvalidPathChars()) >= 0);
+        }
+        public static T SafeCast<T>(object obj) where T : class
+        {
+            T obj2 = obj as T;
+            if (obj2 == null)
+            {
+                //Failure.
+                Globals.LogError("Could not cast object of type " + typeof(T));
+                System.Diagnostics.Debugger.Break();
+            }
+            return obj2;
+        }
+        public static void LogError(string e, bool messageBox=false)
+        {
+            Globals.MainForm.LogError(e,messageBox);
+        }
+        public static string GetDescription<T>(this T enumerationValue) where T : struct
+        {
+            Type type = enumerationValue.GetType();
+            if (!type.IsEnum)
+            {
+                throw new ArgumentException("EnumerationValue must be of Enum type", "enumerationValue");
+            }
 
+            //Tries to find a DescriptionAttribute for a potential friendly name
+            //for the enum
+            MemberInfo[] memberInfo = type.GetMember(enumerationValue.ToString());
+            if (memberInfo != null && memberInfo.Length > 0)
+            {
+                object[] attrs = memberInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
+
+                if (attrs != null && attrs.Length > 0)
+                {
+                    //Pull out the description value
+                    return ((DescriptionAttribute)attrs[0]).Description;
+                }
+            }
+            //If we have no description attribute, just return the ToString of the enum
+            return enumerationValue.ToString();
+        }
+        public static T GetEnumFromComboBox<T>(MetroComboBox b) where T : struct, IConvertible
+        {
+            //Gets the enum for combo box - with translation support
+            //https://stackoverflow.com/questions/79126/create-generic-method-constraining-t-to-an-enum/
+            string lang = b.SelectedItem as string;
+            //Set default enum value to first value
+            T code = (T)Enum.ToObject(typeof(T), 0);
+
+            string eng = Translator.GetEnglish(lang);
+
+            Enum.TryParse(eng, out code);
+            return code;
+        }
+        public static void AppendText(this RichTextBox box, string text, Color color)
+        {
+            box.SelectionStart = box.TextLength;
+            box.SelectionLength = 0;
+
+            box.SelectionColor = color;
+            box.AppendText(text);
+            box.SelectionColor = box.ForeColor;
+        }
+
+        #endregion
 
     }
 }
