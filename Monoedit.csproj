@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="MetroFramework, Version=1.4.0.0, Culture=neutral, PublicKeyToken=5f91a84759bf584a, processorArchitecture=MSIL">
       <HintPath>packages\MetroModernUI.1.4.0.0\lib\net\MetroFramework.dll</HintPath>
@@ -58,45 +61,74 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Generic Controls\MonoEditTab.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Generic Controls\MonoEditTab.Designer.cs">
+      <DependentUpon>MonoEditTab.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Generic Controls\TextEditorTab.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Generic Controls\TextEditorTab.Designer.cs">
+      <DependentUpon>TextEditorTab.cs</DependentUpon>
+    </Compile>
     <Compile Include="Model\BlendFileAction.cs" />
     <Compile Include="Model\BlendFileInfo.cs" />
     <Compile Include="Model\BlendFileObject.cs" />
     <Compile Include="Model\GameObject.cs" />
+    <Compile Include="Model\IMonoEditFile.cs" />
     <Compile Include="Model\JsonFile.cs" />
     <Compile Include="Model\Model.cs" />
     <Compile Include="Model\ModelRenderParameters.cs" />
-    <Compile Include="Model\MonoEditForm.cs">
+    <Compile Include="Generic Controls\MonoEditForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Model\MonoEditForm.Designer.cs">
+    <Compile Include="Generic Controls\MonoEditForm.Designer.cs">
       <DependentUpon>MonoEditForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\MonoEditToolStripRenderer.cs" />
     <Compile Include="Model\OptionsFile.cs" />
     <Compile Include="Model\PackedTexture.cs" />
-    <Compile Include="View\AddEditForm.cs">
+    <Compile Include="Forms\AboutForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\AddEditForm.Designer.cs">
+    <Compile Include="Forms\AboutForm.Designer.cs">
+      <DependentUpon>AboutForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Generic Controls\AddEditBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Generic Controls\AddEditBase.Designer.cs">
+      <DependentUpon>AddEditBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Generic Controls\AddEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Generic Controls\AddEditForm.Designer.cs">
       <DependentUpon>AddEditForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\AddEditImage.cs">
+    <Compile Include="Forms\AddEditImage.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\AddEditImage.Designer.cs">
+    <Compile Include="Forms\AddEditImage.Designer.cs">
       <DependentUpon>AddEditImage.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\CustomMessageBoxForm.cs">
+    <Compile Include="Generic Controls\CustomMessageBoxForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\CustomMessageBoxForm.Designer.cs">
+    <Compile Include="Generic Controls\CustomMessageBoxForm.Designer.cs">
       <DependentUpon>CustomMessageBoxForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\MainForm.cs">
+    <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\MainForm.Designer.cs">
+    <Compile Include="Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\Phrases.cs" />
+    <Compile Include="Model\ThemeApplier.cs" />
+    <Compile Include="Model\Translator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\AtlasImageResource.cs" />
@@ -114,51 +146,69 @@
     <Compile Include="Model\TileMap.cs" />
     <Compile Include="Model\UndoManager.cs" />
     <Compile Include="Model\WindowManager.cs" />
-    <Compile Include="View\NewProjectForm.cs">
+    <Compile Include="Forms\NewProjectForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\NewProjectForm.Designer.cs">
+    <Compile Include="Forms\NewProjectForm.Designer.cs">
       <DependentUpon>NewProjectForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\OptionsForm.cs">
+    <Compile Include="Forms\OptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\OptionsForm.Designer.cs">
+    <Compile Include="Forms\OptionsForm.Designer.cs">
       <DependentUpon>OptionsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\ProgressForm.cs">
+    <Compile Include="Forms\ProgressForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\ProgressForm.Designer.cs">
+    <Compile Include="Forms\ProgressForm.Designer.cs">
       <DependentUpon>ProgressForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\SelectFile.cs">
+    <Compile Include="Generic Controls\SelectFile.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="View\SelectFile.Designer.cs">
+    <Compile Include="Generic Controls\SelectFile.Designer.cs">
       <DependentUpon>SelectFile.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\SpriteListView.cs" />
-    <Compile Include="View\CollectionEditorForm.cs">
+    <Compile Include="Forms\SpriteListView.cs" />
+    <Compile Include="Generic Controls\CollectionEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\CollectionEditorForm.Designer.cs">
+    <Compile Include="Generic Controls\CollectionEditorForm.Designer.cs">
       <DependentUpon>CollectionEditorForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Model\MonoEditForm.resx">
+    <Compile Include="Generic Controls\ToolWindowBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Generic Controls\ToolWindowBase.Designer.cs">
+      <DependentUpon>ToolWindowBase.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Generic Controls\MonoEditForm.resx">
       <DependentUpon>MonoEditForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\AddEditForm.resx">
+    <EmbeddedResource Include="Forms\AboutForm.resx">
+      <DependentUpon>AboutForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Generic Controls\AddEditBase.resx">
+      <DependentUpon>AddEditBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Generic Controls\AddEditForm.resx">
       <DependentUpon>AddEditForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\AddEditImage.resx">
+    <EmbeddedResource Include="Forms\AddEditImage.resx">
       <DependentUpon>AddEditImage.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\CustomMessageBoxForm.resx">
+    <EmbeddedResource Include="Generic Controls\CustomMessageBoxForm.resx">
       <DependentUpon>CustomMessageBoxForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\MainForm.resx">
+    <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Generic Controls\MonoEditTab.resx">
+      <DependentUpon>MonoEditTab.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Generic Controls\TextEditorTab.resx">
+      <DependentUpon>TextEditorTab.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -170,20 +220,23 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="View\NewProjectForm.resx">
+    <EmbeddedResource Include="Forms\NewProjectForm.resx">
       <DependentUpon>NewProjectForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\OptionsForm.resx">
+    <EmbeddedResource Include="Forms\OptionsForm.resx">
       <DependentUpon>OptionsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\ProgressForm.resx">
+    <EmbeddedResource Include="Forms\ProgressForm.resx">
       <DependentUpon>ProgressForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\CollectionEditorForm.resx">
+    <EmbeddedResource Include="Generic Controls\CollectionEditorForm.resx">
       <DependentUpon>CollectionEditorForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\SelectFile.resx">
+    <EmbeddedResource Include="Generic Controls\SelectFile.resx">
       <DependentUpon>SelectFile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Generic Controls\ToolWindowBase.resx">
+      <DependentUpon>ToolWindowBase.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -217,8 +270,11 @@
   <ItemGroup>
     <None Include="rsc\light\appbar.folder.open.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Icon.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /s /e $(ProjectDir)rsc\* $(ProjectDir)$(OutDir)\rsc</PostBuildEvent>
+    <PostBuildEvent>echo F|xcopy /y /s /e $(ProjectDir)rsc\* $(ProjectDir)$(OutDir)\rsc</PostBuildEvent>
   </PropertyGroup>
 </Project>
