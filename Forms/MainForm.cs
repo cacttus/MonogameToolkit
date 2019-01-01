@@ -30,6 +30,10 @@ namespace Monoedit
 
             _mnuMenu.Renderer = new MonoEditToolStripRenderer();
         }
+        public void MainForm_Load(object sender, EventArgs e)
+        {
+            UnloadAndRefresh();
+        }
 
         #region Public: Window Methods
         public void RefreshAllWindows()
@@ -60,10 +64,7 @@ namespace Monoedit
         #endregion
 
         #region Public: Methods
-        public void MainForm_Load(object sender, EventArgs e)
-        {
-            UnloadAndRefresh();
-        }
+ 
 
         public void LogError(string e, bool messagebox = false)
         {
@@ -139,8 +140,38 @@ namespace Monoedit
 
             LoadRecentFiles();
 
+            DisplayTitleImage();
+
             GC.Collect();
         }
+        private void DisplayTitleImage()
+        {
+            Rectangle bounds = _tabEditor.Bounds;
+
+            PictureBox pb = new PictureBox();
+            float xpadding = 0.2f;
+            float ypadding = 0.3f;
+
+            pb.Bounds = new Rectangle()
+            {
+                X = (int)((float)bounds.X + (float)bounds.Width * xpadding)
+                ,Y = (int)((float)bounds.Y + (float)bounds.Height * ypadding)
+                ,Width = (int)((float)bounds.Width - (float)bounds.Width * xpadding *2 )
+                ,Height = (int)((float)bounds.Height - (float)bounds.Height * ypadding * 2)
+            };
+
+            Controls.Add(pb);
+            pb.BringToFront();
+            Bitmap bmp = Globals.LoadBitmapResource(Globals.TitleImageName);
+
+            bmp.BlackAndWhite();
+            pb.Image = bmp;
+            pb.SizeMode = PictureBoxSizeMode.Zoom;
+
+        }
+
+
+
         #endregion
 
         #region File Handling

@@ -77,6 +77,7 @@
     <Compile Include="Model\BlendFileInfo.cs" />
     <Compile Include="Model\BlendFileObject.cs" />
     <Compile Include="Model\GameObject.cs" />
+    <Compile Include="Model\ImageUtils.cs" />
     <Compile Include="Model\IMonoEditFile.cs" />
     <Compile Include="Model\JsonFile.cs" />
     <Compile Include="Model\Model.cs" />
@@ -275,6 +276,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>echo F|xcopy /y /s /e $(ProjectDir)rsc\* $(ProjectDir)$(OutDir)\rsc</PostBuildEvent>
+    <PostBuildEvent>echo F|xcopy /y /e /c /i /h $(ProjectDir)rsc\* $(ProjectDir)$(OutDir)\rsc</PostBuildEvent>
   </PropertyGroup>
 </Project>

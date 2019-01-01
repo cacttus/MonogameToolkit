@@ -17,15 +17,15 @@ namespace Monoedit
 {
     public partial class MonoEditForm : MetroForm
     {
+        public MetroStyleManager MetroStyleManager { get; private set; }
         public MonoEditForm()
         {
             InitializeComponent();
-
         }
-        public MetroStyleManager MetroStyleManager { get; private set; }
         private void MonoEditForm_Load(object sender, EventArgs e)
         {
             //  Don't apply styles here for sake of usercontrols and dynamic controls.
+            Icon = Globals.LoadIconResource("Icon.ico");
         }
         public void ApplyStyle()
         {

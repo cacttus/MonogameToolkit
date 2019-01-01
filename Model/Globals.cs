@@ -21,6 +21,8 @@ namespace Monoedit
 {
     public static class Globals
     {
+        public static string TitleImageName = "Icon.png";
+
         #region Public: Props
         private static MainForm _objMainForm = null;
         //public const string ProgramVersion = "0.01";
@@ -294,7 +296,7 @@ namespace Monoedit
         #region Public: Static Methods
         public static void SetTooltip(List<Control> ctls, Phrase p, int show_duration = 3000)
         {
-            foreach(Control c in ctls)
+            foreach (Control c in ctls)
             {
                 SetTooltip(c, p, show_duration);
             }
@@ -321,7 +323,7 @@ namespace Monoedit
             toAdd.Height = toRemove.Height;
             toAdd.Dock = toRemove.Dock;
             toAdd.Anchor = toRemove.Anchor;
-            
+
 
             Control parent = toRemove.Parent;
             if (parent != null)
@@ -456,8 +458,8 @@ namespace Monoedit
         public static string[] GetValidOpenSaveUserFile(IWin32Window owner, bool bSave,
             string filter, string defaultext, string initialdir, bool multiple = false, string defaultName = "")
         {
-            return GetValidOpenSaveUserFile(owner,  bSave,
-             filter, filter,  defaultext,  initialdir,  multiple ,  defaultName);
+            return GetValidOpenSaveUserFile(owner, bSave,
+             filter, filter, defaultext, initialdir, multiple, defaultName);
         }
         public static string[] GetValidOpenSaveUserFile(IWin32Window owner, bool bSave, string saveFilter,
             string loadFilter, string defaultext, string initialdir, bool multiple = false, string defaultName = "")
@@ -498,12 +500,12 @@ namespace Monoedit
         public static void SelectCboItem(System.Windows.Forms.ComboBox cb, string selected, int defIndex)
         {
             //Translate s
-           string selected_trans = Translator.Translate(selected);
+            string selected_trans = Translator.Translate(selected);
             for (int i = 0; i < cb.Items.Count; ++i)
             {
                 //Do some translation voodoo
                 string item = (cb.Items[i] as string);
-                Phrase p = Translator.FindPhrase(item,  Globals.MainForm.OptionsFile.SelectedLanguage);
+                Phrase p = Translator.FindPhrase(item, Globals.MainForm.OptionsFile.SelectedLanguage);
                 string item_trans = Translator.Translate(p, Globals.MainForm.OptionsFile.SelectedLanguage);
 
                 if (item_trans.Equals(selected_trans))
@@ -555,9 +557,9 @@ namespace Monoedit
             }
             return obj2;
         }
-        public static void LogError(string e, bool messageBox=false)
+        public static void LogError(string e, bool messageBox = false)
         {
-            Globals.MainForm.LogError(e,messageBox);
+            Globals.MainForm.LogError(e, messageBox);
         }
         public static string GetDescription<T>(this T enumerationValue) where T : struct
         {
@@ -608,6 +610,68 @@ namespace Monoedit
 
         #endregion
 
+
+        public static Bitmap LoadThemedBitmapResource(string name)
+        {
+            Bitmap bmp = null;
+            try
+            {
+                string theme = "dark";
+                if (Globals.MainForm.OptionsFile.Theme == MetroThemeStyle.Dark)
+                {
+                    theme = "dark";
+                }
+                else
+                {
+                    theme = "light";
+                }
+
+                bmp = LoadBitmapResource(name, theme);
+            }
+            catch (Exception ex)
+            {
+                Globals.LogError("Failed to load image '" + name + "': " + ex.ToString());
+            }
+            return bmp;
+        }
+        public static Bitmap LoadBitmapResource(string name, string subdir = "")
+        {
+            string dir = Assembly.GetEntryAssembly().Location;
+            dir = Path.GetDirectoryName(dir);
+            if (string.IsNullOrEmpty(subdir) == false)
+            {
+                dir = Path.Combine(dir, "rsc", subdir, name);
+            }
+            else
+            {
+                dir = Path.Combine(dir, "rsc", name);
+            }
+            Bitmap bmp = new Bitmap(dir);
+            return bmp;
+        }
+        public static Icon LoadIconResource(string name, string subdir = "")
+        {
+            Icon ico = null;
+            try
+            {
+                string dir = Assembly.GetEntryAssembly().Location;
+                dir = Path.GetDirectoryName(dir);
+                if (string.IsNullOrEmpty(subdir) == false)
+                {
+                    dir = Path.Combine(dir, "rsc", subdir, name);
+                }
+                else
+                {
+                    dir = Path.Combine(dir, "rsc", name);
+                }
+                ico = new Icon(dir);
+            }
+            catch (Exception ex)
+            {
+                Globals.LogError(ex.ToString());   
+            }
+            return ico;
+        }
     }
 }
 

@@ -34,33 +34,10 @@ namespace Monoedit
         public static Color NumberDark = Color.FromArgb(124, 243, 131);
         public static Color NumberLight = Color.FromArgb(17, 71, 7);
 
-        public static void SetBackgroundImage(Control a, string loc)
+        public static void SetBackgroundImage(Control a, string name)
         {
-            string dir = Assembly.GetEntryAssembly().Location;
-
-            dir = Path.GetDirectoryName(dir);
-
-            string theme = "dark";
-            if (Globals.MainForm.OptionsFile.Theme == MetroThemeStyle.Dark)
-            {
-                theme = "dark";
-            }
-            else
-            {
-                theme = "light";
-            }
-            dir = Path.Combine(dir, "rsc", theme, loc);
-
-            try
-            {
-                a.BackgroundImage = new Bitmap(dir);
-                a.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-
-            }
-            catch (Exception ex)
-            {
-                Globals.LogError("Failed to load image '" + dir + "': " + ex.ToString());
-            }
+            a.BackgroundImage = Globals.LoadThemedBitmapResource(name);
+            a.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
         }
         public static Color EditorTextColor()
         {
