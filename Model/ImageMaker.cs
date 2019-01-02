@@ -10,29 +10,86 @@ namespace Monoedit
 {
     public struct Pixel
     {
-        public byte a;
         public byte r;
         public byte g;
         public byte b;
+        public byte a;
         public Pixel(byte xr, byte xg, byte xb, byte xa)
         {
-            a = xa;
             r = xr;
             g = xg;
             b = xb;
+            a = xa;
         }
     }
-    public class ImageManip
+    public class ImageMaker
     {
         public Bitmap Bitmap { get; private set; } = null;
         public byte[] Data { get; set; } = null;
         public int Stride { get; private set; } = 0;
         public bool Locked { get; private set; } = false;
 
-        public ImageManip(Bitmap bmp)
+        public ImageMaker(Bitmap bmp)
         {
             Bitmap = bmp;
         }
+
+        #region Ops
+        public ImageMaker Colorize(Pixel pix, byte alpha_threshold=0)
+        {
+            //Turn all visible pixels into the specified color.
+            ModifyPixelData((ImageMaker) =>
+            {
+                PixelOp((int x, int y, Pixel p) => {
+                    if(p.a > alpha_threshold)
+                    {
+                        SetPixel(x, y, new Pixel(pix.r, pix.g, pix.b, p.a));
+                    }
+                });
+            });
+
+            return this;
+        }
+        public ImageMaker BlackAndWhite()
+        {
+            ModifyPixelData((ImageMaker) =>
+            {
+                PixelOp((int x, int y, Pixel p) => {
+                    double f = .299 * (double)p.r + .587 * (double)p.g + .114 * (double)p.b;
+                    SetPixel(x, y, new Pixel((byte)f, (byte)f, (byte)f, p.a));
+                });
+            });
+
+            return this;
+        }
+        public ImageMaker SetAlpha(float alpha)
+        {
+            //Set alpha channel (fade image)
+            byte a = (byte)(255 * alpha);
+            ModifyPixelData((ImageMaker) =>
+            {
+                PixelOp((int x, int y, Pixel p) => {
+                    SetPixel(x, y, new Pixel(p.r, p.g, p.b, a));
+                });
+            });
+
+            return this;
+        }
+        #endregion
+
+        #region Base
+
+        public void PixelOp(Action<int, int, Pixel> op)
+        {
+            for (int y = 0; y < Bitmap.Height; ++y)
+            {
+                for (int x = 0; x < Bitmap.Width; ++x)
+                {
+                    op(x, y, GetPixel(x, y));
+                }
+            }
+        }
+
         public Pixel GetPixel(int x, int y)
         {
             if (Locked == false)
@@ -41,20 +98,24 @@ namespace Monoedit
             }
 
             Pixel pix = new Pixel();
-            int iOff = y * Bitmap.Width + x;
+            int iOff = y * Bitmap.Width * Stride + x * Stride;
 
             if (Stride == 4)
             {
-                pix.a = Data[iOff + 0];
-                pix.r = Data[iOff + 1];
-                pix.g = Data[iOff + 2];
-                pix.b = Data[iOff + 3];
+                pix.r = Data[iOff + 0];
+                pix.g = Data[iOff + 1];
+                pix.b = Data[iOff + 2];
+                pix.a = Data[iOff + 3];
             }
             else if (Stride == 3)
             {
                 pix.r = Data[iOff + 0];
                 pix.g = Data[iOff + 1];
                 pix.b = Data[iOff + 2];
+            }
+            else
+            {
+                throw new Exception("Invalid stride for image: Stride=" + Stride);
             }
 
             return pix;
@@ -66,14 +127,14 @@ namespace Monoedit
                 throw new Exception("Bitmap was not locked");
             }
 
-            int iOff = y * Bitmap.Width + x;
+            int iOff = y * Bitmap.Width * Stride + x * Stride;
 
             if (Stride == 4)
             {
-                Data[iOff + 0] = pix.a;
-                Data[iOff + 1] = pix.r;
-                Data[iOff + 2] = pix.g;
-                Data[iOff + 3] = pix.b;
+                Data[iOff + 0] = pix.r;
+                Data[iOff + 1] = pix.g;
+                Data[iOff + 2] = pix.b;
+                Data[iOff + 3] = pix.a;
             }
             else if (Stride == 3)
             {
@@ -81,44 +142,13 @@ namespace Monoedit
                 Data[iOff + 1] = pix.g;
                 Data[iOff + 2] = pix.b;
             }
-        }
-
-        public void PixelOp(Action<> op)
-        {
-
-        }
-        public void BlackAndWhite()
-        {
-            ModifyPixelData((ImageManip) =>
+            else
             {
-
-                for (int iPixel = 0; iPixel < Data.Length / struct; iPixel++)
-                {
-                    byte a = 0;
-                    byte r = 0;
-                    byte g = 0;
-                    byte b = 0;
-
-                    int pix = iPixel * stride;
-
-                    double f = .299 * (double)r + .587 * (double)g + .114 * (double)b;
-                    if (stride == 4)
-                    {
-
-                    }
-                    else if (stride == 3)
-                    {
-
-                    }
-                    dat[counter] = 255;
-                }
-
-            });
-
-            //// Draw the modified image.
-            //e.Graphics.DrawImage(bmp, 0, 150);
+                throw new Exception("Invalid stride for image: Stride=" + Stride);
+            }
         }
-        private void ModifyPixelData(Action<ImageManip> action)
+
+        private void ModifyPixelData(Action<ImageMaker> action)
         {
             // Lock the bitmap's bits. 
             BitmapData bmpData = null;
@@ -136,7 +166,19 @@ namespace Monoedit
                         int numBytes = Math.Abs(bmpData.Stride) * Bitmap.Height;
                         Data = new byte[numBytes];
 
-                        Stride = bmpData.Stride;
+                        int fmt_size = Image.GetPixelFormatSize(Bitmap.PixelFormat);
+                        if (fmt_size == 32)
+                        {
+                            Stride = 4;
+                        }
+                        else if (fmt_size == 24)
+                        {
+                            Stride = 3;
+                        }
+                        else
+                        {
+                            throw new Exception("Invalid pixel format size for image: size=" + fmt_size);
+                        }
 
                         // Copy the RGB values into the array.
                         System.Runtime.InteropServices.Marshal.Copy(ptr, Data, 0, numBytes);
@@ -154,7 +196,7 @@ namespace Monoedit
             }
             catch (Exception ex)
             {
-                Globals.LogError(ex.ToString(),true);
+                Globals.LogError(ex.ToString(), true);
                 Locked = false;
                 if (bmpData != null)
                 {
@@ -170,6 +212,11 @@ namespace Monoedit
 
             }
         }
+        #endregion
+
+
+
+
     }
 
 

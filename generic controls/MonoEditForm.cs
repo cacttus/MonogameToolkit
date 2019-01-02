@@ -25,7 +25,18 @@ namespace Monoedit
         private void MonoEditForm_Load(object sender, EventArgs e)
         {
             //  Don't apply styles here for sake of usercontrols and dynamic controls.
-            Icon = Globals.LoadIconResource("Icon.ico");
+        }
+        private void MonoEditForm_Shown(object sender, EventArgs e)
+        {
+            ApplyStyle();
+            try
+            {
+                Icon = Globals.LoadIconResource("Icon.ico");
+            }
+            catch (Exception ex)
+            {
+                Globals.LogError("Couldn't find icon ");
+            }
         }
         public void ApplyStyle()
         {
@@ -139,31 +150,7 @@ namespace Monoedit
 
         }
 
-        private void MonoEditForm_Shown(object sender, EventArgs e)
-        {
-            ApplyStyle();
-        }
 
-
-
-
-        //protected void ShowValidationError(Phrase p)
-        //{
-        //    //validationLabel.Text = Translator.Translate(p);
-        //    //validationLabel.Show();
-        //    // //Show an error in the corner
-        //    MetroToolTip t = new MetroToolTip();
-        //    t.ReshowDelay = 1;
-        //    t.Theme = Globals.MainForm.OptionsFile.Theme;
-        //    t.UseFading = true;
-        //    t.AutoPopDelay = 3000;
-        //    t.InitialDelay = 1;
-        //    t.IsBalloon = false;
-        //    t.UseAnimation = true;
-        //    t.ForeColor = Color.IndianRed;
-        //    t.AutomaticDelay = 1000;
-        //    t.Show(Translator.Translate(p, Globals.MainForm.OptionsFile.SelectedLanguage), this, new Point(0, 0));
-        //}
 
     }
 }

@@ -12,14 +12,34 @@ namespace Monoedit
         //This does some crazy reverse lookups with a host of dictionaries for performance.
         public static Dictionary<LanguageCode, Dictionary<int, Phrase>> Lexicon = new Dictionary<LanguageCode, Dictionary<int, Phrase>>();
 
+        //AddEditImage form
+        public static Phrase ImagesFolder = new Phrase("Images Folder", "Carpeta de Imagenes");
+        public static Phrase Reload = new Phrase("Reload", "Recargar");
+        public static Phrase AddImage = new Phrase("Add Image", "añadir imagen");
+        public static Phrase EditImage = new Phrase("Edit Image", "Editar imagen");
+        public static Phrase CreateProject = new Phrase("Create Project", "Crear Proyecto");
+        public static Phrase EditProject = new Phrase("Edit Project", "Editar Proyecto");
+        public static Phrase Name = new Phrase("Name", "Nombre");
+        public static Phrase Image = new Phrase("Image", "Imagen");
+        public static Phrase Atlas = new Phrase("Atlas", "Atlante");
+        public static Phrase TileSize = new Phrase("Tile Size", "Tamaño del Szulejo");
+        public static Phrase Spacing = new Phrase("Spacing", "Espaciado");
+        public static Phrase Margin = new Phrase("Margin", "Margen");
+        public static Phrase AtlasParameters = new Phrase("Atlas Parameters", "Parámetros del Atlante");
+        public static Phrase ProjectPath = new Phrase("Project Path", "Ruta del Proyecto");
+        public static Phrase ImageLocation = new Phrase("Image Location", "Ubicación de la Imagen");
 
+        //Add/edit form
+        public static Phrase AddItem = new Phrase("Add an item", "Añadir un artículo.");
+        public static Phrase EditItem = new Phrase("Edit Selected Item", "Editar elemento seleccionado.");
+        public static Phrase RemoveItem = new Phrase("Delete Selected Item", "Eliminar el elemento seleccionado");
+        public static Phrase CopyItem = new Phrase("Copy Selected Item", "Copiar el elemento seleccionado");
+        public static Phrase RefreshForm = new Phrase("Refresh", "Refrescar");
 
+        //
         public static Phrase Warning = new Phrase("Warning", "Caución");
-        public static Phrase RecentFiles = new Phrase("&Recent Files", "&Archivos recientes");
-
-
-        public static Phrase AddItemToCollection = new Phrase("Add an item to the collection.", "Añadir un artículo a la colección.");
-        public static Phrase RemoveItemToCollection = new Phrase("Remove an item from the collection.", "Eliminar un artículo de la colección.");
+        public static Phrase RecentFiles = new Phrase("&Recent Projects", "&Proyectos Recientes");
+        
         public static Phrase Ok = new Phrase("Ok", "Vale");
         public static Phrase Cancel = new Phrase("Cancel", "Cancelar");
         public static Phrase File = new Phrase("File", "Limar");

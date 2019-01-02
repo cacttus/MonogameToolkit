@@ -15,41 +15,33 @@ namespace Monoedit
         Unchanged,
         Modified
     }
-
+    public enum AddEditMode
+    {
+        Add, Edit
+    }
     public partial class ToolWindowBase : MonoEditForm
     {
-        // public string Title = "";
-        public new bool? DialogResult = null;
-
-        public EditStatus EditStatus { get; set; }
-
-        public Action AfterShowDialog = null;
+        public AddEditMode AddEditMode { get; set; } = AddEditMode.Add;
+        public new bool? DialogResult { get; set; } = null;
+        public EditStatus EditStatus { get; set; } = EditStatus.Unchanged;
         public int WindowId { get; set; }
-        static int WindowIdGen = 1;
         public string Title { get; set; } = "Title";
-        //TODO: implement these things
-        //public SizeToContent SizeToContent { get; set; } = SizeToContent.Manual;
-        //public ResizeMode ResizeMode { get; set; } = ResizeMode.CanResize;
+
+        protected Action AfterShowDialog { get; set; } = null;
+        private static int WindowIdGen = 1;
+
+        
         public ToolWindowBase()
         {
             WindowId = WindowIdGen++;
 
             //**Must be set to true
             AllowDrop = true;
-            this.DragEnter += (x, e) =>
-            {
-                int n = 0;
-                n++;
-
-            };
-            //this.Drop += (x, e) =>
-            //{
-            //    int n = 0;
-            //    n++;
-            //};
         }
+        private void ToolWindowBase_Load(object sender, EventArgs e)
+        {
 
-
+        }
         public virtual bool OkButtonClicked()
         {
             DialogResult = true;
@@ -62,32 +54,19 @@ namespace Monoedit
             Close();
             return true;
         }
-
         public virtual bool OnClose()
         {
             //Return false to prevent hte window from closing, and doing some other logic
             return true;
         }
-
-        //public void Show()
+        //public virtual void ShowForm(AddEditMode mode, IWin32Window owner, Action afterShowDialog)
         //{
-        //    Globals.MainWindow.ShowForm(Title, this, false);
+
         //}
-        public void ShowDialog(Action afterShowDialog)
+        protected new virtual List<string> Validate()
         {
-            AfterShowDialog = afterShowDialog;
-            Globals.MainForm.ShowForm(Title, this, true, afterShowDialog);
+            return new List<string>();
         }
-        //public void Hide()
-        //{
-        //    Globals.MainWindow.HideForm(WindowId);
-        //}
-        //public void Close()
-        //{
-        //    Globals.MainWindow.CloseWindow(WindowId);
-        //}
-        protected new virtual List<string> Validate() { return new List<string>(); }
-
         protected bool SaveOnly(Func<bool> postValidate)
         {
             try
@@ -96,7 +75,7 @@ namespace Monoedit
                 if (results.Count > 0)
                 {
                     //ShowValidationError()
-                    string msg = Translator.Translate(Phrases.PleaseCorrectTheFollowingErrors) + 
+                    string msg = Translator.Translate(Phrases.PleaseCorrectTheFollowingErrors) +
                         Environment.NewLine + results.Aggregate((x, y) => x + Environment.NewLine + y) + Environment.NewLine;
                     Globals.ShowInfo(msg);
                     return false;
@@ -112,7 +91,6 @@ namespace Monoedit
                 return false;
             }
         }
-
         protected void SaveAndClose(Func<bool> postValidate)
         {
             if (SaveOnly(postValidate))
@@ -120,10 +98,6 @@ namespace Monoedit
                 Close();
             }
         }
-
-        private void ToolWindowBase_Load(object sender, EventArgs e)
-        {
-
-        }
+  
     }
 }

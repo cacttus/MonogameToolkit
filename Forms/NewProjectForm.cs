@@ -36,6 +36,29 @@ namespace Monoedit
 
             UpdatePath();
         }
+
+        public void ShowForm(AddEditMode e, IWin32Window owner, ProjectFile rsc, Action afterShow)
+        {
+            if (e == AddEditMode.Add)
+            {
+                ProjectFile = new ProjectFile();
+                Title = Translator.Translate(Phrases.CreateProject);
+            }
+            else
+            {
+                ProjectFile = rsc;
+                Title = Translator.Translate(Phrases.EditProject);
+
+                _txtProjectName.Text = ProjectFile.ProjectName;
+                SelectFile.PathText = ProjectFile.LoadedOrSavedFileName;
+
+                UpdatePath();
+            }
+
+            AfterShowDialog = afterShow;
+            Globals.MainForm.ShowForm(Title, this, true, afterShow, owner);
+        }
+
         void CreateSelectFile()
         {
             SelectFile.Filter = ".cs|*.cs";
@@ -87,7 +110,7 @@ namespace Monoedit
                         System.IO.Directory.CreateDirectory(fileDirPath);
                     }
 
-                    ProjectFile = new ProjectFile();
+                    //ProjectFile = new ProjectFile();
                     ProjectFile.ProjectName = _txtProjectName.Text;
                     ProjectFile.SaveAs(filePath);
 

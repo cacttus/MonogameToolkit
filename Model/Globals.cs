@@ -21,11 +21,48 @@ namespace Monoedit
 {
     public static class Globals
     {
+        public static string ProjectRootPlaceholder = "$(ProjectRoot)";
         public static string TitleImageName = "Icon.png";
+        public static string ImagesFolder = ProjectRootPlaceholder+"/Images/";
 
+        public static string ResolvePath(string path)
+        {
+            //replaces wildcards in path.
+            string newpath = path.Trim();
+            if (path.StartsWith(ProjectRootPlaceholder))
+            {
+                string root = Globals.MainForm.ProjectFile.GetProjectRoot();
+                newpath = path.Replace(ProjectRootPlaceholder, "");
+
+                //path combine messes up if you have leading slash
+                newpath= newpath.TrimStart(new char[] { '/','\\'});
+
+                newpath = System.IO.Path.Combine(root, newpath);
+                newpath = Globals.NormalizePath(newpath);
+            }
+            return newpath;
+        }
+
+        public static short StrToShort(string str, short def)
+        {
+            short s = def;
+            if(!short.TryParse(str, out s))
+            {
+                Globals.LogError("Could not parse Short value :" + str, true);
+            }
+            return s;
+        }
+        public static Int32 StrToInt32(string str, Int32 def)
+        {
+            Int32 s = def;
+            if (!Int32.TryParse(str, out s))
+            {
+                Globals.LogError("Could not parse Int32 value :" + str, true);
+            }
+            return s;
+        }
         #region Public: Props
         private static MainForm _objMainForm = null;
-        //public const string ProgramVersion = "0.01";
         public const string ProgramVersion = "0.01";
         public const string ProgramName = "Monogame Toolkit";
         public static double GetProgramVersion()
@@ -34,7 +71,7 @@ namespace Monoedit
             Double.TryParse(ProgramVersion, out d);
             return d;
         }
-        public const string ApplicationTitle = "Indieworks";
+        public const string ApplicationTitle = ProgramName;
 
         public static string SupportedLoadSpriteImageFilter = "Image Files (*.png;*.bmp;*.gif;*.jpg)|*.png;*.bmp;*.gif;*.jpg|All files (*.*)|*.*";
         public static string SupportedLoadSpriteImageFilterDefault = "(*.png;)|*.png";
@@ -402,27 +439,16 @@ namespace Monoedit
         public static Bitmap DefaultImage = null;
         public static Bitmap GetDefaultXImage()
         {
-            // new BitmapImage(new Uri("Resources/invalid_file.png", UriKind.Absolute));
-
-            //    //    string str = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "no.png");
-            //    //    if (File.Exists(str))
-            //    //    {
-            //    //        this.DefaultImage = new Bitmap(str);
-            //    //    }
-            //    //    else
-            //    //    {
-            //    //        Bitmap bitmap = new Bitmap(64, 64, PixelFormat.Format24bppRgb);
-            //    //    }
             if (DefaultImage == null)
             {
                 try
                 {
-                    DefaultImage = new Bitmap("Resources/invalid_file.png");
+                    DefaultImage = LoadBitmapResource("invalid_file.png");
                 }
                 catch (Exception ex)
                 {
-                    Globals.LogError("Could nto find fiel: " + ex.ToString());
-                    DefaultImage = new Bitmap(64, 64);
+                    Globals.LogError("Could not find file: " + ex.ToString());
+                    DefaultImage = new Bitmap(64, 64, PixelFormat.Format24bppRgb);
                 }
             }
             return DefaultImage;
@@ -559,7 +585,15 @@ namespace Monoedit
         }
         public static void LogError(string e, bool messageBox = false)
         {
+            try
+            {
             Globals.MainForm.LogError(e, messageBox);
+            }
+            catch (Exception)
+            {
+                //This is in case the designer calls Logerror
+            }
+
         }
         public static string GetDescription<T>(this T enumerationValue) where T : struct
         {

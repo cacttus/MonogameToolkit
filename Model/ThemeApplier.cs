@@ -34,9 +34,15 @@ namespace Monoedit
         public static Color NumberDark = Color.FromArgb(124, 243, 131);
         public static Color NumberLight = Color.FromArgb(17, 71, 7);
 
-        public static void SetBackgroundImage(Control a, string name)
+        public static void SetBackgroundImage(Control a, string name, bool greyOut=false)
         {
-            a.BackgroundImage = Globals.LoadThemedBitmapResource(name);
+            //greyOut is used to show "disabled" images (in our limited set).
+            Bitmap bmp = Globals.LoadThemedBitmapResource(name);
+            if (greyOut)
+            {
+                new ImageMaker(bmp).Colorize(new Pixel(128, 128, 128, 255));
+            }
+            a.BackgroundImage = bmp;
             a.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
         }
         public static Color EditorTextColor()

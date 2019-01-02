@@ -77,7 +77,7 @@
     <Compile Include="Model\BlendFileInfo.cs" />
     <Compile Include="Model\BlendFileObject.cs" />
     <Compile Include="Model\GameObject.cs" />
-    <Compile Include="Model\ImageUtils.cs" />
+    <Compile Include="Model\ImageMaker.cs" />
     <Compile Include="Model\IMonoEditFile.cs" />
     <Compile Include="Model\JsonFile.cs" />
     <Compile Include="Model\Model.cs" />
@@ -96,12 +96,6 @@
     </Compile>
     <Compile Include="Forms\AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Generic Controls\AddEditBase.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Generic Controls\AddEditBase.Designer.cs">
-      <DependentUpon>AddEditBase.cs</DependentUpon>
     </Compile>
     <Compile Include="Generic Controls\AddEditForm.cs">
       <SubType>Form</SubType>
@@ -189,9 +183,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Generic Controls\AddEditBase.resx">
-      <DependentUpon>AddEditBase.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Generic Controls\AddEditForm.resx">
       <DependentUpon>AddEditForm.cs</DependentUpon>

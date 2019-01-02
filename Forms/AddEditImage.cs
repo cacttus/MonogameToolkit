@@ -10,22 +10,27 @@ using System.Windows.Forms;
 using MetroFramework.Forms;
 namespace Monoedit
 {
-    public partial class AddEditImage : AddEditBase
+    public partial class AddEditImage : ToolWindowBase
     {
         public ImageResource ImageResource { get; private set; }
-
         private SelectFile _objSelectFile = new SelectFile();
 
         public AddEditImage()
         {
             InitializeComponent();
-
             Globals.SetTooltip(
-            _optCopyToProjectDir,
+            new List<Control>() { _txtActualPath, _lblProjectPath },
             new Phrase(
-                "Check this to copy the image to the project directory.  It is recommended you keep all images under /Images.  If the file you select is alread in the /Images folder no copy is performed."
+                "The path of the file after being copied to the project directory."
                     ,
-                "Marque esto para copiar la imagen al directorio del proyecto. Se recomienda mantener todas las imágenes en / Imágenes (/Images). Si el archivo que seleccionó ya está en la carpeta / Imágenes, no se realiza ninguna copia."
+                "La ruta del archivo después de copiarse en el directorio del proyecto."
+                ));
+            Globals.SetTooltip(
+            new List<Control>() { _lblImageType, _optImage, _optAtlas },
+            new Phrase(
+                "Atlas images are image files packed with multiple images.  Select Image if the file is just a single image."
+                    ,
+                "Las imágenes de atlas son archivos de imágenes empaquetadas con múltiples imágenes.Seleccione Imagen si el archivo es solo una imagen."
                 ));
         }
         private void AddEditImage_Load(object sender, EventArgs e)
@@ -40,34 +45,82 @@ namespace Monoedit
             _objSelectFile.TextChanged = () =>
             {
                 //when selected file changed load and update.
-                TryLoadImagePreview();
+                UpdateImagePreview();
+                UpdateActualPath();
+
             };
             Globals.SwapControl(_pnlLocation, _objSelectFile);
-
             _pbImage.SizeMode = PictureBoxSizeMode.Zoom;
+            ToggleShowAtlasParameters();
         }
 
+        public void ShowForm(AddEditMode e, IWin32Window owner, ImageResource rsc, Action afterShow)
+        {
+            if (e == AddEditMode.Add)
+            {
+                ImageResource = new ImageResource();
+                Title = Translator.Translate(Phrases.AddImage);
+            }
+            else
+            {
+                ImageResource = rsc;
+                Title = Translator.Translate(Phrases.EditImage);
+
+                LoadData();
+            }
+
+            AfterShowDialog = afterShow;
+            Globals.MainForm.ShowForm(Title, this, true, afterShow, owner);
+        }
+
+        private void LoadData()
+        {
+            _txtImageName.Text = ImageResource.Name;
+            _objSelectFile.PathText = ImageResource.Path;
+            _optAtlas.Checked = ImageResource.ImageType == ImageType.Atlas;
+            _optImage.Checked = ImageResource.ImageType == ImageType.Image;
+            _txtTileWidth.Text = ImageResource.TileWidth.ToString();
+            _txtTileHeight.Text = ImageResource.TileHeight.ToString();
+
+            UpdateActualPath();
+        }
+        private void SaveData()
+        {
+            ImageResource.Name = _txtImageName.Text;
+            ImageResource.Path = _txtActualPath.Text;
+            if (_optAtlas.Checked) ImageResource.ImageType = ImageType.Atlas;
+            if (_optImage.Checked) ImageResource.ImageType = ImageType.Image;
+            ImageResource.TileWidth = Globals.StrToInt32(_txtTileWidth.Text, 32);
+            ImageResource.TileHeight = Globals.StrToInt32(_txtTileHeight.Text, 32);
+        }
+
+        #region UI 
         private void _btnOk_Click(object sender, EventArgs e)
         {
-            DialogResult = true;
-            Globals.MainForm.ProjectFile.Images.Add(ImageResource);
-            Globals.MainForm.ProjectFile.MarkChanged();
-
-            Close();
+            OkButtonClicked();
         }
-
         private void _btnCancel_Click(object sender, EventArgs e)
         {
             DialogResult = false;
             Close();
         }
-
         private void _btnReload_Click(object sender, EventArgs e)
         {
-            TryLoadImagePreview();
+            UpdateImagePreview();
         }
 
-        private void TryLoadImagePreview()
+        private void _optImage_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleShowAtlasParameters();
+        }
+        private void _optAtlas_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleShowAtlasParameters();
+        }
+        #endregion
+
+        #region Private:Methods
+        private void UpdateImagePreview()
         {
             Bitmap bmp = null;
             try
@@ -83,49 +136,12 @@ namespace Monoedit
             }
             _pbImage.Image = bmp;
         }
-
-        private void _optCopyToProjectDir_CheckedChanged(object sender, EventArgs e)
+        private void UpdateActualPath()
         {
-            UpdatePathPreview();
+            string selected = _objSelectFile.PathText;
+            string fn = System.IO.Path.GetFileName(selected);
+            _txtActualPath.Text = System.IO.Path.Combine(Globals.ImagesFolder, fn);
         }
-
-        private void _optUseSelectedPath_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdatePathPreview();
-        }
-        void UpdatePathPreview()
-        {
-            try
-            {
-                if (_optCopyToProjectDir.Checked)
-                {
-                    string fn = System.IO.Path.GetFileName(_objSelectFile.PathText);
-
-                    string image = System.IO.Path.Combine(
-                        Globals.MainForm.ProjectFile.ImagesPath(), fn);
-                    _txtImagePathPreview.Text = image;
-                }
-                else if (_optUseSelectedPath.Checked)
-                {
-                    _txtImagePathPreview.Text = _objSelectFile.PathText;
-                }
-            }
-            catch (Exception ex)
-            {
-                Globals.LogError(ex.ToString());
-            }
-        }
-
-        private void metroLabel2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void _optImage_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
         protected override List<String> Validate()
         {
             List<string> results = new List<string>();
@@ -157,7 +173,7 @@ namespace Monoedit
                 _objSelectFile.FileLocationTextBox.ForeColor = Color.Red;
             }
 
-            if (System.IO.File.Exists(ImageResource.Path) == false)
+            if (System.IO.File.Exists(Globals.ResolvePath(_objSelectFile.PathText)) == false)
             {
                 results.Add("Image file does not exist.");
                 _objSelectFile.FileLocationTextBox.ForeColor = Color.Red;
@@ -165,27 +181,20 @@ namespace Monoedit
 
             return results;
         }
-
         public override bool OkButtonClicked()
         {
+
+            SaveData();
+
             SaveAndClose(() =>
             {
-                //Most if not all resources should be copied to the project folder.
-                if (_optCopyToProjectDir.Checked == true)
+                //All resources are now copied
+                if (CopyImageToProjectDir() == false)
                 {
-                    string p0 = System.IO.Path.GetFullPath(_txtImagePathPreview.Text);
-                    string p1 = System.IO.Path.GetFullPath(ImageResource.Path);
-
-                    if ((AddEditMode == AddEditMode.Edit && p0 != p1) || AddEditMode == AddEditMode.Add)
-                    {
-                        if (CopyResourceToLocalResourceFolder() == false)
-                        {
-                            return false;
-                        }
-                    }
+                    return false;
                 }
 
-                //Run this when we validate successfully
+                //Vvalidated successfully
                 DialogResult = true;
 
                 //Add resource to project file.
@@ -198,12 +207,13 @@ namespace Monoedit
                     else
                     {
                         //test
+                        Globals.LogError("Image resource was already found in project.");
                         System.Diagnostics.Debugger.Break();
                     }
                 }
                 else if (AddEditMode == AddEditMode.Edit)
                 {
-
+                    //Do nothin
                 }
                 else
                 {
@@ -214,28 +224,42 @@ namespace Monoedit
             });
             return false;
         }
+        private bool CopyImageToProjectDir()
+        {
+            string p0 = System.IO.Path.GetFullPath(_txtActualPath.Text);
+            string p1 = System.IO.Path.GetFullPath(ImageResource.Path);
+
+            if ((AddEditMode == AddEditMode.Edit && p0 != p1) || AddEditMode == AddEditMode.Add)
+            {
+                if (CopyResourceToLocalResourceFolder() == false)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
         private bool CopyResourceToLocalResourceFolder()
         {
             //Copy the given image to the ./{ProjectRoot}/images folder
             //Returns false if the user cancelled the operation
             try
             {
-                Globals.MainForm.ProjectFile.SetCwdToRoot();
+                //Not necessary we deal with absolutes anyway.
+                //Globals.MainForm.ProjectFile.SetCwdToRoot();
 
-                //Copy File.
-                string imgCurFolder = System.IO.Path.GetDirectoryName(ImageResource.Path);
-                string imgCurFilename = System.IO.Path.GetFileName(ImageResource.Path);
-                string imgNewFilename = System.IO.Path.Combine(Globals.MainForm.ProjectFile.GetImageResourcePath(), imgCurFilename);
-                string imgNewFolder = System.IO.Path.GetDirectoryName(imgNewFilename);
+                string projectPath = Globals.ResolvePath(ImageResource.Path);
+                string filePath = Globals.ResolvePath(_objSelectFile.PathText);
 
-                if (Globals.PathsAreEqual(imgCurFolder, imgNewFolder))
+                if (Globals.PathsAreEqual(projectPath, filePath))
                 {
-                    Globals.MainForm.SetStatus("Image " + imgNewFilename + " already located in /images folder, no copy performed.");
+                    Globals.MainForm.SetStatus("Image " + projectPath + 
+                        " already located in /images folder, no copy performed.");
                 }
                 else
                 {
                     //Check to see if the file exists.  If it does then prompt hte user that there is a conflict.
-                    bool? continueCopy = CheckImageDoesntExistBeforeCopying(imgNewFilename);
+                    bool? continueCopy = CheckImageDoesntExistBeforeCopying(projectPath);
 
                     if (continueCopy == null)
                     {
@@ -243,14 +267,13 @@ namespace Monoedit
                     }
                     else if (continueCopy == true)
                     {
-                        if (System.IO.File.Exists(imgNewFilename))
+                        if (System.IO.File.Exists(projectPath))
                         {
-                            System.IO.File.Delete(imgNewFilename);
+                            System.IO.File.Delete(projectPath);
                         }
-                        System.IO.File.Copy(ImageResource.Path, imgNewFilename);
-                        ImageResource.Path = Globals.GetRelativePath(imgNewFilename, Globals.MainForm.ProjectFile.GetProjectRoot());
+                        //Imageresource path is a wildcard path.
+                        System.IO.File.Copy(filePath, projectPath);
                     }
-                    //Otherwise wer're goign to use the image in that folder.
 
                     //Set path and reload.
                     ImageResource.LoadIfNecessary(true);
@@ -310,23 +333,30 @@ namespace Monoedit
             return true;
         }
 
+        private void ToggleShowAtlasParameters()
+        {
+            bool vis = false;
+            if (_optAtlas.Checked)
+            {
+                vis = true;
+            }
+
+            _gbpAtlasParameters.Enabled =
+            _lblAtlasParameters.Enabled = vis;
+        }
 
 
 
+        #endregion
 
+        private void metroCheckBox1_CheckedChanged(object sender, EventArgs e)
+        {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+        }
     }
+
+
+
+
+
 }

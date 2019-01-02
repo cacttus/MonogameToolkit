@@ -43,6 +43,8 @@ namespace Monoedit
         private Func<SpriteListView, List<SpriteListViewItem>> GetFrames;
         private Action<SpriteListView, List<object>> DeleteFunc;
 
+        public Action OnRefresh { get; set; } = null;
+
         public SpriteListView(Func<SpriteListView, List<SpriteListViewItem>> GetFramesFunc, Action<SpriteListView, List<object>> deleteFunc)
         {
             GetFrames = GetFramesFunc;
@@ -130,6 +132,10 @@ namespace Monoedit
                 {
                     return (f as Frame).Name;
                 }
+                else if (f is ImageResource)
+                {
+                    return (f as ImageResource).Name;
+                }
                 else
                 {
                     throw new NotImplementedException();
@@ -159,12 +165,6 @@ namespace Monoedit
 
         public void UpdateListView()
         {
-            //if (_objMainForm.TextureInfo.PackedTexture == null)
-            //{
-            //    _objMainForm.LogError("File was not loaded. or texture was null.");
-            //}
-            //else
-            //{
             object selectedObject = GetSelectedObject();
             Items.Clear();
             View = System.Windows.Forms.View.LargeIcon;
@@ -214,7 +214,8 @@ namespace Monoedit
                 LargeImageList = imageList;
             }
             SetListViewToSelectedObjectTag((ListView)this, selectedObject);
-            //}
+
+            OnRefresh?.Invoke();
         }
 
         private static void SetListViewToSelectedObjectTag(ListView lv, object selected)
