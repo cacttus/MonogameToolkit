@@ -61,11 +61,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Generic Controls\MonoEditTab.cs">
+    <Compile Include="Forms\ProjectPropertiesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ProjectPropertiesForm.Designer.cs">
+      <DependentUpon>ProjectPropertiesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Generic Controls\MonoEditNumericUpDown.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Generic Controls\MonoEditTab.Designer.cs">
-      <DependentUpon>MonoEditTab.cs</DependentUpon>
+    <Compile Include="Generic Controls\MonoEditNumericUpDown.Designer.cs">
+      <DependentUpon>MonoEditNumericUpDown.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Generic Controls\MonoEditTabContent.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Generic Controls\MonoEditTabContent.Designer.cs">
+      <DependentUpon>MonoEditTabContent.cs</DependentUpon>
     </Compile>
     <Compile Include="Generic Controls\TextEditorTab.cs">
       <SubType>UserControl</SubType>
@@ -78,7 +90,7 @@
     <Compile Include="Model\BlendFileObject.cs" />
     <Compile Include="Model\GameObject.cs" />
     <Compile Include="Model\ImageMaker.cs" />
-    <Compile Include="Model\IMonoEditFile.cs" />
+    <Compile Include="Model\MonoEditFile.cs" />
     <Compile Include="Model\JsonFile.cs" />
     <Compile Include="Model\Model.cs" />
     <Compile Include="Model\ModelRenderParameters.cs" />
@@ -97,11 +109,11 @@
     <Compile Include="Forms\AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Generic Controls\AddEditForm.cs">
+    <Compile Include="Generic Controls\AddEditContainer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Generic Controls\AddEditForm.Designer.cs">
-      <DependentUpon>AddEditForm.cs</DependentUpon>
+    <Compile Include="Generic Controls\AddEditContainer.Designer.cs">
+      <DependentUpon>AddEditContainer.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\AddEditImage.cs">
       <SubType>Form</SubType>
@@ -172,20 +184,23 @@
     <Compile Include="Generic Controls\CollectionEditorForm.Designer.cs">
       <DependentUpon>CollectionEditorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Generic Controls\ToolWindowBase.cs">
+    <Compile Include="Generic Controls\AddEditWindowBase.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Generic Controls\ToolWindowBase.Designer.cs">
-      <DependentUpon>ToolWindowBase.cs</DependentUpon>
+    <Compile Include="Generic Controls\AddEditWindowBase.Designer.cs">
+      <DependentUpon>AddEditWindowBase.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Forms\ProjectPropertiesForm.resx">
+      <DependentUpon>ProjectPropertiesForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Generic Controls\MonoEditForm.resx">
       <DependentUpon>MonoEditForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Generic Controls\AddEditForm.resx">
-      <DependentUpon>AddEditForm.cs</DependentUpon>
+    <EmbeddedResource Include="Generic Controls\AddEditContainer.resx">
+      <DependentUpon>AddEditContainer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AddEditImage.resx">
       <DependentUpon>AddEditImage.cs</DependentUpon>
@@ -196,8 +211,11 @@
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Generic Controls\MonoEditTab.resx">
-      <DependentUpon>MonoEditTab.cs</DependentUpon>
+    <EmbeddedResource Include="Generic Controls\MonoEditNumericUpdown.resx">
+      <DependentUpon>MonoEditNumericUpDown.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Generic Controls\MonoEditTabContent.resx">
+      <DependentUpon>MonoEditTabContent.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Generic Controls\TextEditorTab.resx">
       <DependentUpon>TextEditorTab.cs</DependentUpon>
@@ -227,8 +245,8 @@
     <EmbeddedResource Include="Generic Controls\SelectFile.resx">
       <DependentUpon>SelectFile.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Generic Controls\ToolWindowBase.resx">
-      <DependentUpon>ToolWindowBase.cs</DependentUpon>
+    <EmbeddedResource Include="Generic Controls\AddEditWindowBase.resx">
+      <DependentUpon>AddEditWindowBase.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

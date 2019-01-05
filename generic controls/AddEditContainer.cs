@@ -11,14 +11,14 @@ using MetroFramework.Forms;
 
 namespace Monoedit
 {
-    public partial class AddEditItem : MonoEditForm
+    public partial class AddEditContainer : MonoEditForm
     {
         Action<SpriteListView> _addClick = null;
         Action<SpriteListView, object> _editClick = null;
         Action<SpriteListView, List<object>> _removeClick = null;
         SpriteListView SpriteListView = null;
 
-        public AddEditItem()
+        public AddEditContainer()
         {
             InitializeComponent();
         }

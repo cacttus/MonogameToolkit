@@ -33,7 +33,7 @@
             this._btnCancel = new MetroFramework.Controls.MetroButton();
             this._btnOk = new MetroFramework.Controls.MetroButton();
             this._btnReload = new MetroFramework.Controls.MetroButton();
-            this._txtActualPath = new MetroFramework.Controls.MetroTextBox();
+            this._txtProjectPath = new MetroFramework.Controls.MetroTextBox();
             this._optAtlas = new MetroFramework.Controls.MetroRadioButton();
             this._optImage = new MetroFramework.Controls.MetroRadioButton();
             this._lblImageType = new MetroFramework.Controls.MetroLabel();
@@ -120,39 +120,39 @@
             // 
             // _txtActualPath
             // 
-            this._txtActualPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this._txtProjectPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             // 
             // 
             // 
-            this._txtActualPath.CustomButton.Image = null;
-            this._txtActualPath.CustomButton.Location = new System.Drawing.Point(280, 1);
-            this._txtActualPath.CustomButton.Name = "";
-            this._txtActualPath.CustomButton.Size = new System.Drawing.Size(21, 21);
-            this._txtActualPath.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
-            this._txtActualPath.CustomButton.TabIndex = 1;
-            this._txtActualPath.CustomButton.Theme = MetroFramework.MetroThemeStyle.Dark;
-            this._txtActualPath.CustomButton.UseSelectable = true;
-            this._txtActualPath.CustomButton.Visible = false;
-            this._txtActualPath.Enabled = false;
-            this._txtActualPath.Lines = new string[] {
+            this._txtProjectPath.CustomButton.Image = null;
+            this._txtProjectPath.CustomButton.Location = new System.Drawing.Point(280, 1);
+            this._txtProjectPath.CustomButton.Name = "";
+            this._txtProjectPath.CustomButton.Size = new System.Drawing.Size(21, 21);
+            this._txtProjectPath.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this._txtProjectPath.CustomButton.TabIndex = 1;
+            this._txtProjectPath.CustomButton.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this._txtProjectPath.CustomButton.UseSelectable = true;
+            this._txtProjectPath.CustomButton.Visible = false;
+            this._txtProjectPath.Enabled = false;
+            this._txtProjectPath.Lines = new string[] {
         "/"};
-            this._txtActualPath.Location = new System.Drawing.Point(36, 207);
-            this._txtActualPath.MaxLength = 32767;
-            this._txtActualPath.Name = "_txtActualPath";
-            this._txtActualPath.PasswordChar = '\0';
-            this._txtActualPath.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this._txtActualPath.SelectedText = "";
-            this._txtActualPath.SelectionLength = 0;
-            this._txtActualPath.SelectionStart = 0;
-            this._txtActualPath.ShortcutsEnabled = true;
-            this._txtActualPath.Size = new System.Drawing.Size(302, 23);
-            this._txtActualPath.TabIndex = 6;
-            this._txtActualPath.Text = "/";
-            this._txtActualPath.Theme = MetroFramework.MetroThemeStyle.Dark;
-            this._txtActualPath.UseSelectable = true;
-            this._txtActualPath.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
-            this._txtActualPath.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            this._txtProjectPath.Location = new System.Drawing.Point(36, 207);
+            this._txtProjectPath.MaxLength = 32767;
+            this._txtProjectPath.Name = "_txtActualPath";
+            this._txtProjectPath.PasswordChar = '\0';
+            this._txtProjectPath.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this._txtProjectPath.SelectedText = "";
+            this._txtProjectPath.SelectionLength = 0;
+            this._txtProjectPath.SelectionStart = 0;
+            this._txtProjectPath.ShortcutsEnabled = true;
+            this._txtProjectPath.Size = new System.Drawing.Size(302, 23);
+            this._txtProjectPath.TabIndex = 6;
+            this._txtProjectPath.Text = "/";
+            this._txtProjectPath.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this._txtProjectPath.UseSelectable = true;
+            this._txtProjectPath.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this._txtProjectPath.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
             // 
             // _optAtlas
             // 
@@ -617,7 +617,7 @@
             this.Controls.Add(this._lblAtlasParameters);
             this.Controls.Add(this._lblImageType);
             this.Controls.Add(this._txtImageName);
-            this.Controls.Add(this._txtActualPath);
+            this.Controls.Add(this._txtProjectPath);
             this.Controls.Add(this._btnCancel);
             this.Controls.Add(this._btnReload);
             this.Controls.Add(this._btnOk);
@@ -643,7 +643,7 @@
         private MetroFramework.Controls.MetroButton _btnCancel;
         private MetroFramework.Controls.MetroButton _btnOk;
         private MetroFramework.Controls.MetroButton _btnReload;
-        private MetroFramework.Controls.MetroTextBox _txtActualPath;
+        private MetroFramework.Controls.MetroTextBox _txtProjectPath;
         private MetroFramework.Controls.MetroRadioButton _optAtlas;
         private MetroFramework.Controls.MetroRadioButton _optImage;
         private MetroFramework.Controls.MetroLabel _lblImageType;

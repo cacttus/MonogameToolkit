@@ -19,7 +19,8 @@ namespace Monoedit
     {
         Add, Edit
     }
-    public partial class ToolWindowBase : MonoEditForm
+
+    public partial class AddEditWindowBase : MonoEditForm
     {
         public AddEditMode AddEditMode { get; set; } = AddEditMode.Add;
         public new bool? DialogResult { get; set; } = null;
@@ -27,47 +28,65 @@ namespace Monoedit
         public int WindowId { get; set; }
         public string Title { get; set; } = "Title";
 
-        protected Action AfterShowDialog { get; set; } = null;
         private static int WindowIdGen = 1;
 
-        
-        public ToolWindowBase()
+        //Create or copy your add/edit form object with these
+        protected virtual void AddObject() { throw new NotImplementedException(); }
+        protected virtual void EditObject(object obj) { throw new NotImplementedException(); }
+        protected virtual void LoadData() { throw new NotImplementedException(); }
+        protected virtual void SaveData() { throw new NotImplementedException(); }
+
+        private void ToolWindowBase_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        public void ShowForm(AddEditMode e, IWin32Window owner,
+            Phrase addEditTitle, 
+            object rsc, Action<DialogResult?> afterShow)
+        {
+            AddEditMode = e;
+
+            if (AddEditMode == AddEditMode.Add)
+            {
+                AddObject();
+            }
+            else
+            {
+                EditObject(rsc);
+            }
+
+            Title = Translator.Translate(addEditTitle);
+
+            Globals.MainForm.ShowForm(Title, this, true, afterShow, owner);
+        }
+
+        public AddEditWindowBase()
         {
             WindowId = WindowIdGen++;
 
             //**Must be set to true
             AllowDrop = true;
         }
-        private void ToolWindowBase_Load(object sender, EventArgs e)
-        {
 
-        }
-        public virtual bool OkButtonClicked()
+        //"Ok" button
+        protected void ApplyChangesAndClose(Func<bool> postValidate)
         {
             DialogResult = true;
-            Close();
-            return true;
+            if (ApplyChanges(postValidate))
+            {
+                Close();
+            }
         }
-        public virtual bool CancelButtonClicked()
+        //"Cancel" button
+        public virtual bool CancelChanges()
         {
             DialogResult = false;
             Close();
             return true;
         }
-        public virtual bool OnClose()
-        {
-            //Return false to prevent hte window from closing, and doing some other logic
-            return true;
-        }
-        //public virtual void ShowForm(AddEditMode mode, IWin32Window owner, Action afterShowDialog)
-        //{
-
-        //}
-        protected new virtual List<string> Validate()
-        {
-            return new List<string>();
-        }
-        protected bool SaveOnly(Func<bool> postValidate)
+        // "Apply" button
+        protected bool ApplyChanges(Func<bool> postValidate)
         {
             try
             {
@@ -91,13 +110,13 @@ namespace Monoedit
                 return false;
             }
         }
-        protected void SaveAndClose(Func<bool> postValidate)
+
+        protected new virtual List<string> Validate()
         {
-            if (SaveOnly(postValidate))
-            {
-                Close();
-            }
+            throw new NotImplementedException();
+            return new List<string>();
         }
-  
+
+
     }
 }

@@ -17,29 +17,42 @@ namespace Monoedit
     public class ImageResource : ResourceBase
     {
         [JsonProperty]
-        public string Path { get; set; }
+        public string Path { get; set; } = "";
         [JsonProperty]
-        public ImageType ImageType { get; set; }
+        public ImageType ImageType { get; set; } = ImageType.Image;
         [JsonProperty]
-        public Int32 TileCountX { get; set; }
+        public Int32 TileCountX { get; set; } = 16;
         [JsonProperty]
-        public Int32 TileCountY { get; set; }
+        public Int32 TileCountY { get; set; } = 16;
         [JsonProperty]
-        public Int32 TileWidth { get; set; }
+        public Int32 TileWidth { get; set; } = 16;
         [JsonProperty]
-        public Int32 TileHeight { get; set; }
+        public Int32 TileHeight { get; set; } = 16;
         [JsonProperty]
-        public Int32 PaddingX { get; set; }
+        public Int32 PaddingX { get; set; } = 1;
         [JsonProperty]
-        public Int32 PaddingY { get; set; }
+        public Int32 PaddingY { get; set; } = 1;
         [JsonProperty]
-        public Int32 SpacingX { get; set; }
+        public Int32 SpacingX { get; set; } = 1;
         [JsonProperty]
-        public Int32 SpacingY { get; set; }
+        public Int32 SpacingY { get; set; } = 1;
 
         //Not Serialized
         [JsonIgnore]
-        public Bitmap Bitmap { get; set; } = null;
+        private Bitmap _objBitmap = null;
+        [JsonIgnore]
+        public Bitmap Bitmap
+        {
+            get
+            {
+                LoadIfNecessary(false);
+                return _objBitmap;
+            }
+            set
+            {
+                _objBitmap = value;
+            }
+        }
 
         public ImageResource() { }
         public ImageResource(Int64 id) : base(id) { }
@@ -50,21 +63,21 @@ namespace Monoedit
         }
         public void LoadIfNecessary(bool force)
         {
-            if (Bitmap == null || force)
+            if (_objBitmap == null || force)
             {
-                if (Bitmap != null)
+                if (_objBitmap != null)
                 {
-                    Bitmap = null;
+                    _objBitmap = null;
                     GC.Collect();
                 }
                 string dir = Globals.ResolvePath(Path);
                 if (File.Exists(dir))
                 {
-                    Bitmap = new Bitmap(dir);
+                    _objBitmap = new Bitmap(dir);
                 }
                 else
                 {
-                    Bitmap = Globals.GetDefaultXImage();
+                    _objBitmap = Globals.GetDefaultXImage();
                 }
             }
         }
@@ -77,34 +90,6 @@ namespace Monoedit
             }
             return true;
         }
-
-        //public override void Serialize(BinaryWriter w, string version)
-        //{
-        //    base.Serialize(w, version);
-        //    BinUtils.WriteString(Path, w);
-        //    BinUtils.WriteInt16(TileCountX, w);
-        //    BinUtils.WriteInt16(TileCountY, w);
-        //    BinUtils.WriteInt16(TileWidth, w);
-        //    BinUtils.WriteInt16(TileHeight, w);
-        //    BinUtils.WriteInt16(PaddingX, w);
-        //    BinUtils.WriteInt16(PaddingY, w);
-        //    BinUtils.WriteInt16(SpacingX, w);
-        //    BinUtils.WriteInt16(SpacingY, w);
-        //}
-
-        //public override void Deserialize(BinaryReader r, string version)
-        //{
-        //    base.Deserialize(r, version);
-        //    Path = BinUtils.ReadString(r);
-        //    TileCountX = BinUtils.ReadInt16(r);
-        //    TileCountY = BinUtils.ReadInt16(r);
-        //    TileWidth = BinUtils.ReadInt16(r);
-        //    TileHeight = BinUtils.ReadInt16(r);
-        //    PaddingX = BinUtils.ReadInt16(r);
-        //    PaddingY = BinUtils.ReadInt16(r);
-        //    SpacingX = BinUtils.ReadInt16(r);
-        //    SpacingY = BinUtils.ReadInt16(r);
-        //}
 
         //Adding the image map utils.
         public Bitmap GetImageForFrame(Frame f)
@@ -125,7 +110,7 @@ namespace Monoedit
         private Bitmap GetSubImageForRect(Rectangle r, int texid)
         {
             LoadIfNecessary(false);
-            
+
             //Globals.GetDefaultXImage();
 
             Rectangle destRegion = new Rectangle(0, 0, r.Width, r.Height);
@@ -133,26 +118,6 @@ namespace Monoedit
             Globals.CopyRegionIntoImage(Bitmap, r, ref destBitmap, destRegion);
             return destBitmap;
         }
-
-        //public Bitmap GetDefaultXImage()
-        //{
-        //    return Globals.GetDefaultXImage();
-        //    //if (this.DefaultImage == null)
-        //    //{
-        //    //    string str = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "no.png");
-        //    //    if (File.Exists(str))
-        //    //    {
-        //    //        this.DefaultImage = new Bitmap(str);
-        //    //    }
-        //    //    else
-        //    //    {
-        //    //        Bitmap bitmap = new Bitmap(64, 64, PixelFormat.Format24bppRgb);
-        //    //    }
-        //    //}
-        //    //return this.DefaultImage;
-        //}
-
-
 
 
     }

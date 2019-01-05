@@ -120,7 +120,6 @@ namespace Monoedit
             if (SwitchingLanguage == false)
             {
                 SwitchingLanguage = true;
-
                 TranslateUI(Globals.MainForm, Globals.MainForm.OptionsFile.SelectedLanguage, newCode);
 
                 foreach (MetroForm f in Globals.MainForm.Forms)
@@ -132,8 +131,8 @@ namespace Monoedit
                 }
 
                 Globals.MainForm.OptionsFile.SelectedLanguage = newCode;
+                SwitchingLanguage = false;
             }
-            SwitchingLanguage = false;
         }
 
         public static void TranslateUI(Control cont, LanguageCode from, LanguageCode to)

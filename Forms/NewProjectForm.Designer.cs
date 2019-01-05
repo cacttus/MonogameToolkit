@@ -37,13 +37,14 @@
             this.metroLabel2 = new MetroFramework.Controls.MetroLabel();
             this.metroLabel3 = new MetroFramework.Controls.MetroLabel();
             this._chkOverwrite = new MetroFramework.Controls.MetroCheckBox();
+            this._chkCreateProjectDirectory = new MetroFramework.Controls.MetroCheckBox();
             this.SuspendLayout();
             // 
             // _pnlProjectDir
             // 
             this._pnlProjectDir.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this._pnlProjectDir.Location = new System.Drawing.Point(13, 136);
+            this._pnlProjectDir.Location = new System.Drawing.Point(12, 142);
             this._pnlProjectDir.Name = "_pnlProjectDir";
             this._pnlProjectDir.Size = new System.Drawing.Size(553, 28);
             this._pnlProjectDir.TabIndex = 0;
@@ -99,7 +100,7 @@
             // _btnOk
             // 
             this._btnOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this._btnOk.Location = new System.Drawing.Point(219, 244);
+            this._btnOk.Location = new System.Drawing.Point(219, 264);
             this._btnOk.Name = "_btnOk";
             this._btnOk.Size = new System.Drawing.Size(75, 23);
             this._btnOk.TabIndex = 3;
@@ -111,7 +112,7 @@
             // _btnCancel
             // 
             this._btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this._btnCancel.Location = new System.Drawing.Point(300, 244);
+            this._btnCancel.Location = new System.Drawing.Point(300, 264);
             this._btnCancel.Name = "_btnCancel";
             this._btnCancel.Size = new System.Drawing.Size(75, 23);
             this._btnCancel.TabIndex = 3;
@@ -139,7 +140,7 @@
             this._txtFinalPath.Enabled = false;
             this._txtFinalPath.Lines = new string[] {
         "/"};
-            this._txtFinalPath.Location = new System.Drawing.Point(89, 178);
+            this._txtFinalPath.Location = new System.Drawing.Point(88, 176);
             this._txtFinalPath.MaxLength = 32767;
             this._txtFinalPath.Name = "_txtFinalPath";
             this._txtFinalPath.PasswordChar = '\0';
@@ -161,7 +162,7 @@
             // metroLabel2
             // 
             this.metroLabel2.AutoSize = true;
-            this.metroLabel2.Location = new System.Drawing.Point(13, 114);
+            this.metroLabel2.Location = new System.Drawing.Point(12, 120);
             this.metroLabel2.Name = "metroLabel2";
             this.metroLabel2.Size = new System.Drawing.Size(120, 19);
             this.metroLabel2.TabIndex = 4;
@@ -171,7 +172,7 @@
             // metroLabel3
             // 
             this.metroLabel3.AutoSize = true;
-            this.metroLabel3.Location = new System.Drawing.Point(13, 182);
+            this.metroLabel3.Location = new System.Drawing.Point(12, 180);
             this.metroLabel3.Name = "metroLabel3";
             this.metroLabel3.Size = new System.Drawing.Size(74, 19);
             this.metroLabel3.TabIndex = 4;
@@ -181,7 +182,7 @@
             // _chkOverwrite
             // 
             this._chkOverwrite.AutoSize = true;
-            this._chkOverwrite.Location = new System.Drawing.Point(374, 87);
+            this._chkOverwrite.Location = new System.Drawing.Point(107, 226);
             this._chkOverwrite.Name = "_chkOverwrite";
             this._chkOverwrite.Size = new System.Drawing.Size(183, 15);
             this._chkOverwrite.TabIndex = 5;
@@ -189,11 +190,26 @@
             this._chkOverwrite.Theme = MetroFramework.MetroThemeStyle.Dark;
             this._chkOverwrite.UseSelectable = true;
             // 
+            // _chkCreateProjectDirectory
+            // 
+            this._chkCreateProjectDirectory.AutoSize = true;
+            this._chkCreateProjectDirectory.Checked = true;
+            this._chkCreateProjectDirectory.CheckState = System.Windows.Forms.CheckState.Checked;
+            this._chkCreateProjectDirectory.Location = new System.Drawing.Point(107, 205);
+            this._chkCreateProjectDirectory.Name = "_chkCreateProjectDirectory";
+            this._chkCreateProjectDirectory.Size = new System.Drawing.Size(148, 15);
+            this._chkCreateProjectDirectory.TabIndex = 5;
+            this._chkCreateProjectDirectory.Text = "Create Project Directory";
+            this._chkCreateProjectDirectory.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this._chkCreateProjectDirectory.UseSelectable = true;
+            this._chkCreateProjectDirectory.CheckedChanged += new System.EventHandler(this._chkCreateProjectDirectory_CheckedChanged);
+            // 
             // NewProjectForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(580, 290);
+            this.ClientSize = new System.Drawing.Size(580, 310);
+            this.Controls.Add(this._chkCreateProjectDirectory);
             this.Controls.Add(this._chkOverwrite);
             this.Controls.Add(this.metroLabel3);
             this.Controls.Add(this.metroLabel2);
@@ -222,5 +238,6 @@
         private MetroFramework.Controls.MetroLabel metroLabel2;
         private MetroFramework.Controls.MetroLabel metroLabel3;
         private MetroFramework.Controls.MetroCheckBox _chkOverwrite;
+        private MetroFramework.Controls.MetroCheckBox _chkCreateProjectDirectory;
     }
 }

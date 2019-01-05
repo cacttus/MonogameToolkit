@@ -16,6 +16,7 @@ namespace Monoedit
         public MonoEditFile File { get; private set; }
         public RichTextBox TextBox { get { return _rtbText; } }
         private RichTextBox _rtbText;//This is in the designer
+        bool SuspendTextboxUpdates = false;
 
         public string SavedFileContents = ""; //used to compare for changes
 
@@ -35,22 +36,34 @@ namespace Monoedit
         {
             string initdir = System.IO.Path.GetDirectoryName(Globals.MainForm.ProjectFile.LoadedOrSavedFileName);
 
-            string[] files = Globals.GetValidOpenSaveUserFile(this, true, Globals.ProjectFilter,Globals.ProjectExt, initdir);
+            string[] files = Globals.GetValidOpenSaveUserFile(this, true, Globals.ProjectFilter, Globals.ProjectExt, initdir);
             if (files.Length == 1)
             {
                 File.SaveAs(files[0]);
             }
         }
-        public void Populate(MonoEditFile file)
+        public override void Populate(object obj)
         {
-            File = file;
+            MonoEditFile file = obj as MonoEditFile;
 
+            System.Diagnostics.Debug.Assert(file != null);
+            File = file;
             string text = System.IO.File.ReadAllText(File.LoadedOrSavedFileName);
             SavedFileContents = text;
-            PrettyPrint(text);
-            //TextBox.Text = text;
+            _rtbText.Text = text;
         }
-
+        public override string GetTabHeaderText()
+        {
+            if (this.File != null)
+            {
+                return System.IO.Path.GetFileName(File.LoadedOrSavedFileName);
+            }
+            return "";
+        }
+        private bool IsDelim(char c)
+        {
+            return Char.IsWhiteSpace(c) || c == ',' || c == ':' || c == '}' || c == '{';
+        }
         public void PrettyPrint(string input)
         {
             _rtbText.Clear();
@@ -66,71 +79,99 @@ namespace Monoedit
             bool in_nr = false;
             bool in_text = false;
             bool in_string = false;
+            char parent_string = '\"';//whether we are in single/or dobule quote string
             Color fore = TextForeColor;
+
+            Action spit = () =>
+            {
+                //End token.
+                if (build.Length > 0)
+                {
+                    TextBox.AppendText(build, fore);
+                    build = "";
+                }
+
+                //Reset parse state
+                in_nr = false;
+                in_text = false;
+                fore = TextForeColor;
+            };
 
             foreach (char c in input)
             {
-                if (Char.IsWhiteSpace(c) || c==',' || c==':')
+                //A - if delim, then spit out current build and reset state.
+                //B - set font and soforth.
+                if (IsDelim(c))
                 {
-                    //End token.
-                    if (build.Length > 0)
+                    if (in_string == false)
                     {
-                        TextBox.AppendText(build, fore);
-                        build = "";
+                        spit();
                     }
-
-                    //Reset parse state
-                    in_nr = false;
-                    in_text = false;
-                    fore = TextForeColor;
                 }
                 else if (Char.IsNumber(c))
                 {
-                    if (in_text == false)
+                    if (in_string == false)
                     {
-                        if (in_string == false)
+                        if (in_nr == false && in_text == false)
                         {
+                            spit();
+
                             fore = NumberColor;
                             in_nr = true;
                         }
-                    }
-                }
-                else if(c=='\"' || c == '\'')
-                {
-                    if (in_string)
-                    {
-                        in_string = false;
-                    }
-                    else
-                    {
-                        in_string = true;
-                        fore = StringColor;
                     }
                 }
                 else if (char.IsLetter(c))
                 {
                     if (in_string == false)
                     {
-                        fore = TextForeColor;
-                        in_text = true;
+                        if (in_text == false)
+                        {
+                            if (in_nr == false)
+                            {
+                                spit();//only spit if we aren't in an identifier
+                            }
+                            fore = TextForeColor;
+                            in_text = true;
+                        }
+                    }
+                }
+                else if (c == '\"' || c == '\'')
+                {
+                    if (in_string == false)
+                    {
+                        spit();
+
+                        in_string = true;
+                        fore = StringColor;
+                        parent_string = c;
+                    }
+                    else
+                    {
+                        //Allow for nested string types.
+                        if (parent_string == c)
+                        {
+                            in_string = false;
+                        }
                     }
                 }
                 else
                 {
-                    fore = TextForeColor;
+                    if (in_string == false)
+                    {
+                        fore = TextForeColor;
+                    }
                 }
 
                 build += c;
             }
 
             TextBox.AppendText(build, fore);
-
-
         }
         public void Format()
         {
             string e = System.IO.Path.GetExtension(File.LoadedOrSavedFileName);
-            if(e.ToLower().Equals(".json"))
+            if (e.ToLower().Equals(".json"))
             {
                 //Format JSON
                 PrettyPrint(FormatJson(TextBox.Text));
@@ -154,13 +195,22 @@ namespace Monoedit
 
         private void _rtbText_TextChanged(object sender, EventArgs e)
         {
-            if (String.Equals(_rtbText.Text, Equals(SavedFileContents)) == false)
+            if (SuspendTextboxUpdates == false)
             {
-                MarkChanged();
-            }
-            else
-            {
-                ClearChanged();
+                SuspendTextboxUpdates = true;
+                string t = _rtbText.Text;
+                _rtbText.Text = "";
+                PrettyPrint(t);
+
+                if (String.Equals(_rtbText.Text, SavedFileContents) == false)
+                {
+                    MarkChanged();
+                }
+                else
+                {
+                    ClearChanged();
+                }
+                SuspendTextboxUpdates = false;
             }
         }
     }

@@ -23,19 +23,23 @@ namespace Monoedit
     {
         public static string ProjectRootPlaceholder = "$(ProjectRoot)";
         public static string TitleImageName = "Icon.png";
-        public static string ImagesFolder = ProjectRootPlaceholder+"/Images/";
+        public static string ImagesFolder = ProjectRootPlaceholder + "/Images/";
 
         public static string ResolvePath(string path)
         {
-            //replaces wildcards in path.
+            //replaces wildcards in path and roots the path to the directory root
             string newpath = path.Trim();
             if (path.StartsWith(ProjectRootPlaceholder))
             {
-                string root = Globals.MainForm.ProjectFile.GetProjectRoot();
+                string root = "";
+               // if (returnAbsolutePath)
+               // {
+                    root = Globals.MainForm.ProjectFile.GetProjectRoot();
+              //  }
                 newpath = path.Replace(ProjectRootPlaceholder, "");
 
                 //path combine messes up if you have leading slash
-                newpath= newpath.TrimStart(new char[] { '/','\\'});
+                newpath = newpath.TrimStart(new char[] { '/', '\\' });
 
                 newpath = System.IO.Path.Combine(root, newpath);
                 newpath = Globals.NormalizePath(newpath);
@@ -46,7 +50,7 @@ namespace Monoedit
         public static short StrToShort(string str, short def)
         {
             short s = def;
-            if(!short.TryParse(str, out s))
+            if (!short.TryParse(str, out s))
             {
                 Globals.LogError("Could not parse Short value :" + str, true);
             }
@@ -195,17 +199,17 @@ namespace Monoedit
             return string.Equals(System.IO.Path.GetFullPath(a),
                             System.IO.Path.GetFullPath(b), StringComparison.OrdinalIgnoreCase);
         }
-        public static string GetRelativePath(string fileOrPath, string folder)
-        {
-            Uri pathUri = new Uri(fileOrPath);
-            // Folders must end in a slash
-            if (!folder.EndsWith(Path.DirectorySeparatorChar.ToString()))
-            {
-                folder += Path.DirectorySeparatorChar;
-            }
-            Uri folderUri = new Uri(folder);
-            return Uri.UnescapeDataString(folderUri.MakeRelativeUri(pathUri).ToString().Replace('/', Path.DirectorySeparatorChar));
-        }
+        //public static string GetRelativePath(string fileOrPath, string folder)
+        //{
+        //    Uri pathUri = new Uri(fileOrPath);
+        //    // Folders must end in a slash
+        //    if (!folder.EndsWith(Path.DirectorySeparatorChar.ToString()))
+        //    {
+        //        folder += Path.DirectorySeparatorChar;
+        //    }
+        //    Uri folderUri = new Uri(folder);
+        //    return Uri.UnescapeDataString(folderUri.MakeRelativeUri(pathUri).ToString().Replace('/', Path.DirectorySeparatorChar));
+        //}
         public static string GetDocumentsFolderPath()
         {
             return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -587,7 +591,7 @@ namespace Monoedit
         {
             try
             {
-            Globals.MainForm.LogError(e, messageBox);
+                Globals.MainForm.LogError(e, messageBox);
             }
             catch (Exception)
             {
@@ -702,7 +706,7 @@ namespace Monoedit
             }
             catch (Exception ex)
             {
-                Globals.LogError(ex.ToString());   
+                Globals.LogError(ex.ToString());
             }
             return ico;
         }

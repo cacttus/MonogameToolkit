@@ -41,22 +41,27 @@ namespace Monoedit
         {
 
         }
-        public DialogResult? ShowForm(string header, MonoEditForm f, 
-            bool bModal = false, Action afterShow = null, IWin32Window owner = null)
+        public DialogResult? ShowForm(string header, AddEditWindowBase f,
+            bool bModal = false, Action<DialogResult?> afterShow = null, IWin32Window owner = null)
         {
             DialogResult? dr = null;
             if (bModal)
             {
-                dr = f.ShowDialog(owner);
-                afterShow?.Invoke();
+                //Do not use system dialog result
+                f.ShowDialog(owner);
+                if (f.DialogResult == null)
+                {
+                    throw new Exception("Dialog result was not set for tool window");
+                }
+                dr = f.DialogResult.Value == true ? DialogResult.OK : DialogResult.Cancel;
+                afterShow?.Invoke(dr);
             }
             else
             {
                 Forms.Add(f);
                 f.Closing += (x, e) =>
                 {
-                    afterShow?.Invoke();
-
+                    afterShow?.Invoke(dr);
                 };
                 f.Show();
             }
@@ -91,12 +96,6 @@ namespace Monoedit
         public void AddEditObject(Frame fr, Sprite s, bool bClose)
         {
         }
-        //void ShowAddEdit(Action<SpriteListView> add, Action<SpriteListView, List<object>> remove, Func<SpriteListView, List<SpriteListViewItem>> getframes)
-        //{
-        //    AddEditItem f = new AddEditItem();
-        //    f.Init(add, remove, getframes);
-        //    f.ShowDialog(this);
-        //}
         public void MarkChanged(bool changed)
         {
             if (this.ProjectFile != null)
@@ -205,19 +204,25 @@ namespace Monoedit
                 if (CheckDiscardChanges())
                 {
                     NewProjectForm d = new NewProjectForm();
-                    d.ShowForm(AddEditMode.Add, this,  null,  () =>
-                    {
-                        if (d.ProjectFile != null)
+                    d.ShowForm(AddEditMode.Add, this, Phrases.CreateProject, null,
+                        (DialogResult? dr) =>
                         {
-                            ProjectFile = d.ProjectFile;
-                            ProjectFile.MarkChanged();
+                            if (dr != null && dr == DialogResult.OK)
+                            {
+                                if (d.ProjectFile != null)
+                                {
+                                    ProjectFile = d.ProjectFile;
+                                    ProjectFile.MarkChanged();
 
-                            //Run initial save so we have it.
-                            FileSaveProject();
+                                    //Run initial save so we have it.
+                                    FileSaveProject();
 
-                            AfterProjectFileLoaded(true);
+                                    AfterProjectFileLoaded(true);
+                                }
+                            }
+
                         }
-                    });
+                    );
                 }
             }
             catch (Exception ex)
@@ -232,21 +237,24 @@ namespace Monoedit
         }
         private void FileSaveProject()
         {
-            //User file -> save - save to last path
-            if (string.IsNullOrEmpty(ProjectFile.LoadedOrSavedFileName) == false)
+            if (ProjectFile != null)
             {
-                //if (File.Exists(ProjectFile.ProjectFileName))
+                //User file -> save - save to last path
+                if (string.IsNullOrEmpty(ProjectFile.LoadedOrSavedFileName) == false)
                 {
-                    ProjectFile.Save();
-                    SaveRecentFile(ProjectFile.LoadedOrSavedFileName);
+                    //if (File.Exists(ProjectFile.ProjectFileName))
+                    {
+                        ProjectFile.Save();
+                        SaveRecentFile(ProjectFile.LoadedOrSavedFileName);
 
-                    SetAutoLoadFile(ProjectFile.LoadedOrSavedFileName);
+                        SetAutoLoadFile(ProjectFile.LoadedOrSavedFileName);
+                    }
                 }
-            }
-            else
-            {
-                //If no last path set save as
-                PromptSaveAs();
+                else
+                {
+                    //If no last path set save as
+                    PromptSaveAs();
+                }
             }
         }
         private void PromptSaveAs()
@@ -349,9 +357,11 @@ namespace Monoedit
         {
             try
             {
+                //Unload everything.
+                UnloadAndRefresh();
+
                 ProjectFile = new ProjectFile();
                 ProjectFile = Globals.SafeCast<ProjectFile>(ProjectFile.Load(fn));
-                ProjectFile.MarkChanged();
                 SaveRecentFile(fn);
                 SetAutoLoadFile(fn);
 
@@ -370,7 +380,12 @@ namespace Monoedit
             imagesToolStripMenuItem.Enabled =
             layersToolStripMenuItem.Enabled =
             closeProjectToolStripMenuItem.Enabled =
+            saveToolStripMenuItem.Enabled =
+            saveAsToolStripMenuItem.Enabled =
             (ProjectFile != null);
+
+            //Update Title.
+            MarkChanged(false);
 
             if (loaded)
             {
@@ -429,7 +444,6 @@ namespace Monoedit
         }
         private void undoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
         }
         private void objectsToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -447,21 +461,23 @@ namespace Monoedit
         }
         private void imagesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AddEditItem addEditItemForm = new AddEditItem();
-   
+            AddEditContainer addEditItemForm = new AddEditContainer();
+
             Action<SpriteListView> add = (SpriteListView view) =>
             {
                 AddEditImage f = new AddEditImage();
-                f.ShowForm(AddEditMode.Add, addEditItemForm, null, ()=> { });
+                f.ShowForm(AddEditMode.Add, addEditItemForm,
+                    Phrases.AddImage, null, (DialogResult? dr) => { });
                 view.UpdateListView();
             };
-            Action<SpriteListView,object > edit = (SpriteListView view, object obj) =>
+            Action<SpriteListView, object> edit = (SpriteListView view, object obj) =>
             {
                 AddEditImage f = new AddEditImage();
                 ImageResource r = obj as ImageResource;
                 if (obj != null)
                 {
-                    f.ShowForm(AddEditMode.Edit, addEditItemForm, r, () => { });
+                    f.ShowForm(AddEditMode.Edit, addEditItemForm,
+                        Phrases.EditImage, r, (DialogResult? dr) => { });
                     view.UpdateListView();
                 }
             };
@@ -540,19 +556,28 @@ namespace Monoedit
             ToggleTabMenuOptions();
 
             //Enable / disable menu options when tab changed
-            _tabEditor.TabIndexChanged += (object sender, EventArgs e) =>
+            _tabEditor.SelectedIndexChanged += (object sender, EventArgs e) =>
             {
                 ToggleTabMenuOptions();
             };
+            //_tabEditor.ControlAdded += (object sender, ControlEventArgs e) =>
+            //{
+            //    ToggleTabMenuOptions();
+            //};
+            //_tabEditor.ControlRemoved += (object sender, ControlEventArgs e) =>
+            //{
+            //    ToggleTabMenuOptions();
+            //};
         }
+
+
 
         private void OpenProjectFileTextEditor()
         {
             if (ProjectFile != null)
             {
                 TextEditorTab tb = new TextEditorTab();
-                tb.Populate(ProjectFile);
-                MakeTab(tb);
+                MakeTab(tb, ProjectFile);
             }
         }
         private void CloseTab(int? tabId)
@@ -571,13 +596,35 @@ namespace Monoedit
                 TitleImage.Show();
             }
         }
-        private void MakeTab(MonoEditTabContent ctl)
+        public void TabHeaderChanged(MonoEditTabContent cont)
+        {
+            TabPage tp = GetTabPageByTabContent(cont);
+            if (tp != null)
+            {
+                tp.Text = cont.TabHeader;
+            }
+        }
+        private TabPage GetTabPageByTabContent(MonoEditTabContent cont)
+        {
+            foreach (TabPage tp in _tabEditor.TabPages)
+            {
+                foreach (Control c in tp.Controls)
+                {
+                    if (c == cont)
+                    {
+                        return tp;
+                    }
+                }
+            }
+            return null;
+        }
+        private void MakeTab(MonoEditTabContent ctl, object toPopulate)
         {
             //Testin tabs
             //Load project file in new tab
             TabPage tp = new TabPage();
-            tp.Text = ctl.TabHeader;// System.IO.Path.GetFileName(ctl.);
-            tp.Tag = g_tabId++;
+            int capture_tag = g_tabId++;
+            tp.Tag = capture_tag;
             //Force a dock fill.
             ctl.Dock = DockStyle.Fill;
             tp.Controls.Add(ctl);
@@ -588,7 +635,7 @@ namespace Monoedit
             ToolStripMenuItem item = new ToolStripMenuItem(Translator.Translate(Phrases.Close));
             item.Click += (x, y) =>
             {
-                CloseTab(tp.Tag as int?);
+                CloseTab(capture_tag as int?);
             };
             cm.Items.Add(item);
 
@@ -601,6 +648,11 @@ namespace Monoedit
             };
             _tabEditor.TabPages.Add(tp);
 
+            //The order of things here is to ensure the form is visible before populating, that way
+            //the control callbacks get fired.
+            ctl.Populate(toPopulate);
+
+            //Call this again.
             ToggleTabMenuOptions();
 
             TitleImage.Hide();
@@ -618,13 +670,23 @@ namespace Monoedit
                 {
                     saveFileAsToolStripMenuItem.Enabled = true;
                     saveFileToolStripMenuItem.Enabled = true;
-                    rep = System.IO.Path.GetFileName(ed.File.LoadedOrSavedFileName);
-
+                    if (ed.File != null)
+                    {
+                        rep = System.IO.Path.GetFileName(ed.File.LoadedOrSavedFileName);
+                    }
                     EnableTextEditorTabOptions(true);
                 }
             }
+
+            if (string.IsNullOrEmpty(rep))
+            {
+                //set to blank and disable
+                saveFileAsToolStripMenuItem.Enabled = false;
+                saveFileToolStripMenuItem.Enabled = false;
+            }
             saveFileAsToolStripMenuItem.Text = Translator.Translate(Phrases.SaveFileAs).Replace("{1}", rep);
             saveFileToolStripMenuItem.Text = Translator.Translate(Phrases.SaveFile).Replace("{1}", rep);
+
         }
         private void DisableAllTabMenuOptions(bool enable = false)
         {
@@ -657,7 +719,21 @@ namespace Monoedit
 
         #endregion
 
+        private void exportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //Export as a file thing.
+        }
 
+        private void propertiesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ProjectPropertiesForm pf = new ProjectPropertiesForm();
+            pf.ShowForm(AddEditMode.Edit, this, Phrases.EditProjectProperties, ProjectFile,
+                (DialogResult? d) =>
+                {
+
+                }
+            );
+        }
 
     }
 }

@@ -12,6 +12,9 @@ namespace Monoedit
         //This does some crazy reverse lookups with a host of dictionaries for performance.
         public static Dictionary<LanguageCode, Dictionary<int, Phrase>> Lexicon = new Dictionary<LanguageCode, Dictionary<int, Phrase>>();
 
+        //Project Properties
+        public static Phrase EditProjectProperties = new Phrase("Edit Project Properties", "Editar propiedades del proyecto");
+
         //AddEditImage form
         public static Phrase ImagesFolder = new Phrase("Images Folder", "Carpeta de Imagenes");
         public static Phrase Reload = new Phrase("Reload", "Recargar");
@@ -28,6 +31,7 @@ namespace Monoedit
         public static Phrase AtlasParameters = new Phrase("Atlas Parameters", "Parámetros del Atlante");
         public static Phrase ProjectPath = new Phrase("Project Path", "Ruta del Proyecto");
         public static Phrase ImageLocation = new Phrase("Image Location", "Ubicación de la Imagen");
+        public static Phrase ImageAlreadyExists = new Phrase("Image '{0}' already located in /images folder, no copy performed.", "Imagen '{0}' ya ubicada en la carpeta /imagenes. No copia realizada.");
 
         //Add/edit form
         public static Phrase AddItem = new Phrase("Add an item", "Añadir un artículo.");

@@ -12,17 +12,17 @@ namespace Monoedit
     public class ProjectFile :  Monoedit.JsonFile<ProjectFile>
     {
         #region Private:Members
+        [JsonProperty]
+        private string _strProjectName = "";
         [JsonIgnore]
-        private string _strProjectName = "MyProject--unsaved";
-        [JsonIgnore]
-        private string _strLoadedOrSavedProjectFileName = "MyProject.iwp";
-        [JsonIgnore]
+        private string _strLoadedOrSavedProjectFileName = "";
+        [JsonProperty]
         private List<ImageResource> _lstImages = new List<ImageResource>();
-        [JsonIgnore]
+        [JsonProperty]
         private List<TileMap> _lstTileMaps = new List<TileMap>();
-        [JsonIgnore]
+        [JsonProperty]
         private List<GameObject> _lstGameObjects = new List<GameObject>();
-        [JsonIgnore]
+        [JsonProperty]
         private List<Sprite> _lstSprites = new List<Sprite>();
         [JsonProperty]
         private Int64 IdGen = 1000;
@@ -30,6 +30,10 @@ namespace Monoedit
         public int MaxUndo { get; set; } = 100;
         [JsonProperty]
         public int MaxAtlasSize { get; set; } = 4096;
+        [JsonProperty]
+        public string OutputPath { get; set; } = "";
+        [JsonProperty]
+        public string OutputFilename { get; set; } = "";
 
         public Int64 GenId()
         {
@@ -38,7 +42,8 @@ namespace Monoedit
         #endregion
 
         #region Properties
-        [JsonProperty]
+        //Ignore properties to prevent MarkChanged from getting called on load.
+        [JsonIgnore]
         public string ProjectName
         {
             get
@@ -51,8 +56,7 @@ namespace Monoedit
                 MarkChanged();
             }
         }
-
-        [JsonProperty]
+        [JsonIgnore]
         public List<ImageResource> Images
         {
             get
@@ -65,7 +69,7 @@ namespace Monoedit
                 MarkChanged();
             }
         }
-        [JsonProperty]
+        [JsonIgnore]
         public List<GameObject> GameObjects
         {
             get
@@ -78,7 +82,7 @@ namespace Monoedit
                 MarkChanged();
             }
         }
-        [JsonProperty]
+        [JsonIgnore]
         public List<Sprite> Sprites
         {
             get
@@ -91,7 +95,7 @@ namespace Monoedit
                 MarkChanged();
             }
         }
-        [JsonProperty]
+        [JsonIgnore]
         public List<TileMap> Maps
         {
             get
@@ -147,7 +151,7 @@ namespace Monoedit
 
         public void SetCwdToRoot()
         {
-            System.IO.Directory.SetCurrentDirectory(GetProjectRoot());
+            Directory.SetCurrentDirectory(GetProjectRoot());
         }
 
         public string GetProjectRoot()

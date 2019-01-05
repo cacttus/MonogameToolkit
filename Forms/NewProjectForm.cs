@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Monoedit
 {
-    public partial class NewProjectForm : ToolWindowBase
+    public partial class NewProjectForm : AddEditWindowBase
     {
         public ProjectFile ProjectFile { get; private set; } = null;
         SelectFile SelectFile = new SelectFile();
@@ -21,6 +21,14 @@ namespace Monoedit
         }
 
         private void NewProjectForm_Load(object sender, EventArgs e)
+        {
+            LoadData();
+        }
+
+        protected override void SaveData()
+        {
+        }
+        protected override void LoadData()
         {
             CreateSelectFile();
 
@@ -34,39 +42,32 @@ namespace Monoedit
                 "Nombre del proyecto(también nombre de la carpeta y archivo del proyecto)")
                 );
 
+
+            _txtProjectName.Text = ProjectFile.ProjectName;
+            SelectFile.PathText = ProjectFile.LoadedOrSavedFileName;
             UpdatePath();
         }
-
-        public void ShowForm(AddEditMode e, IWin32Window owner, ProjectFile rsc, Action afterShow)
+        protected override void AddObject()
         {
-            if (e == AddEditMode.Add)
-            {
-                ProjectFile = new ProjectFile();
-                Title = Translator.Translate(Phrases.CreateProject);
-            }
-            else
-            {
-                ProjectFile = rsc;
-                Title = Translator.Translate(Phrases.EditProject);
-
-                _txtProjectName.Text = ProjectFile.ProjectName;
-                SelectFile.PathText = ProjectFile.LoadedOrSavedFileName;
-
-                UpdatePath();
-            }
-
-            AfterShowDialog = afterShow;
-            Globals.MainForm.ShowForm(Title, this, true, afterShow, owner);
+            ProjectFile = new ProjectFile();
+            
+            //Defaults
+            ProjectFile.ProjectName = "MyProject";
+            ProjectFile.LoadedOrSavedFileName = System.IO.Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Monogame Toolkit Projects");
+        }
+        protected override void EditObject(object obj)
+        {
+            ProjectFile = obj as ProjectFile;
         }
 
-        void CreateSelectFile()
+        private void CreateSelectFile()
         {
             SelectFile.Filter = ".cs|*.cs";
             SelectFile.DefaultExt = ".cs";
             SelectFile.InitialDir = "C:/";
             SelectFile.Instruction = "Select Folder";
-            SelectFile.PathText = System.IO.Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Monogame Toolkit Projects");
+            SelectFile.PathText = "";
             SelectFile.Mode = SelectFileMode.Folder;
             SelectFile.TextChanged += () => {
                 UpdatePath();
@@ -84,7 +85,8 @@ namespace Monoedit
             {
                 errs.Add(Translator.Translate(Phrases.ProjectNameIsEmpty));
             }
-            if (System.IO.Directory.Exists(GetFilePath()))
+            string filePath = GetFilePath();
+            if (System.IO.Directory.Exists(filePath))
             {
                 if (_chkOverwrite.Checked == false)
                 {
@@ -99,7 +101,7 @@ namespace Monoedit
         }
         private void _btnOk_Click(object sender, EventArgs e)
         {
-            SaveAndClose(() => {
+            ApplyChangesAndClose(() => {
                 try
                 {
                     string filePath = _txtFinalPath.Text;
@@ -120,6 +122,7 @@ namespace Monoedit
                     {
                         System.IO.Directory.CreateDirectory(images_path);
                     }
+                    DialogResult = true;
 
                     return true;
                 }
@@ -134,7 +137,7 @@ namespace Monoedit
 
         private void _btnCancel_Click(object sender, EventArgs e)
         {
-            Close();
+            CancelChanges();
         }
 
         private void _pnlProjectDir_Paint(object sender, PaintEventArgs e)
@@ -156,8 +159,15 @@ namespace Monoedit
         void UpdatePath()
         {
             _txtFinalPath.Text = System.IO.Path.Combine(
-                SelectFile.PathText, _txtProjectName.Text, ProjectFileName());
+                SelectFile.PathText, 
+                _chkCreateProjectDirectory.Checked ? _txtProjectName.Text : String.Empty
+                , ProjectFileName());
 
+        }
+
+        private void _chkCreateProjectDirectory_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdatePath();
         }
     }
 }

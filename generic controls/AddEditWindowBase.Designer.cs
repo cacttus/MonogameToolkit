@@ -1,6 +1,6 @@
 ﻿namespace Monoedit
 {
-    partial class ToolWindowBase
+    partial class AddEditWindowBase
     {
         /// <summary>
         /// Required designer variable.

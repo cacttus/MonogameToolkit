@@ -10,7 +10,7 @@ namespace Monoedit
     public abstract class MonoEditFile
     {
         [JsonIgnore]
-        public string LoadedOrSavedFileName { get; protected set; } = "";
+        public string LoadedOrSavedFileName { get; set; } = "";
 
         public MonoEditFile()
         {
