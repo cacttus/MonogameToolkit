@@ -17,14 +17,15 @@ namespace Monoedit
             InitializeComponent();
         }
 
-        public int Min { get; set; } = 0;
-        public int Max { get; set; } = 100;
-        public int Value
+        public Action ValueChanged { get; set; } = null;
+        public double Min { get; set; } = 0;
+        public double Max { get; set; } = 100;
+        public double Value
         {
             get
             {
-                int n = 0;
-                Int32.TryParse(_txtValue.Text, out n);
+                double n = 0;
+                Double.TryParse(_txtValue.Text, out n);
                 return n;
             }
             set
@@ -40,15 +41,15 @@ namespace Monoedit
 
         private void _btnUp_Click(object sender, EventArgs e)
         {
-            int n = 0;
-            if (Int32.TryParse(_txtValue.Text, out n))
+            double n = 0;
+            if (Double.TryParse(_txtValue.Text, out n))
             {
                 n = CheckRange(n + 1);
                 _txtValue.Text = n.ToString();
             }
 
         }
-        private int CheckRange(int n)
+        private double CheckRange(double n)
         {
             if (n > Max) n = Max;
             if (n < Min) n = Min;
@@ -56,17 +57,36 @@ namespace Monoedit
         }
         private void _btnDown_Click(object sender, EventArgs e)
         {
-            int n = 0;
-            if (Int32.TryParse(_txtValue.Text, out n))
+            double n = 0;
+            if (double.TryParse(_txtValue.Text, out n))
             {
                 n = CheckRange(n - 1);
                 _txtValue.Text = n.ToString();
             }
         }
-
         private void _txtValue_Click(object sender, EventArgs e)
         {
+        }
+        private void _txtValue_TextChanged(object sender, EventArgs e)
+        {
+            ValueChanged?.Invoke();
+        }
+        private void _txtValue_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (e.KeyChar != '.'))
+            {
+                e.Handled = true;
+            }
 
+            // only allow one decimal point
+            MetroFramework.Controls.MetroTextBox mt = (sender as MetroFramework.Controls.MetroTextBox);
+            if (mt != null)
+            {
+                if ((e.KeyChar == '.') && (mt.Text.IndexOf('.') > -1))
+                {
+                    e.Handled = true;
+                }
+            }
         }
     }
 }

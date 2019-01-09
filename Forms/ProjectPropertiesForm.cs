@@ -13,7 +13,6 @@ namespace Monoedit
     public partial class ProjectPropertiesForm : AddEditWindowBase
     {
         ProjectFile ProjectFile = null;
-
         MonoEditNumericUpDown _nudMaxTextureWidth;
 
         public ProjectPropertiesForm()
@@ -26,12 +25,19 @@ namespace Monoedit
             _nudMaxTextureWidth.Min = 256;
             _nudMaxTextureWidth.Max = 32767;
             _nudMaxTextureWidth.Value = 4096;
-
+            _nudMaxTextureWidth.ValueChanged = () => {
+                MarkChanged(true);
+            };
             Globals.SwapControl(_pnlMaxTextureWidth, _nudMaxTextureWidth);
 
-            LoadData();
-        }
+            _cboExportFileType.Items.Add("PNG");
+            _cboExportFileType.SelectedIndex = 0;
 
+
+            LoadData();
+
+            MarkChanged(false);
+        }
         protected override void AddObject()
         {
             //We aren't "adding" a project file.
@@ -50,9 +56,9 @@ namespace Monoedit
         }
         protected override void SaveData()
         {
-            ProjectFile.MaxAtlasSize = _nudMaxTextureWidth.Value;
-            ProjectFile.OutputPath = _txtOutputDirectory.Text;
-            ProjectFile.OutputFilename = _txtOutputFilename.Text;
+            ProjectFile.MaxAtlasSize = (int)_nudMaxTextureWidth.Value;
+            ProjectFile.OutputPath = _txtOutputDirectory.Text.Trim();
+            ProjectFile.OutputFilename = _txtOutputFilename.Text.Trim();
         }
         protected new virtual List<string> Validate()
         {
@@ -62,7 +68,6 @@ namespace Monoedit
             {
                 res.Add("Output directory cannot be blank.");
             }
-
             if (string.IsNullOrEmpty(_txtOutputFilename.Text))
             {
                 res.Add("Output filename cannot be blank.");
@@ -74,30 +79,43 @@ namespace Monoedit
         {
 
         }
-
         private void _btnOk_Click(object sender, EventArgs e)
         {
             ApplyChangesAndClose(() => {
-
                 SaveData();
-
-
                 return true;
             });
         }
-
         private void _btnApply_Click(object sender, EventArgs e)
         {
             ApplyChanges(() => {
-
-
+                SaveData();
+                MarkChanged(false);
                 return true;
             });
-        }
 
+        }
         private void _btnCancel_Click(object sender, EventArgs e)
         {
             CancelChanges();
         }
+        private void _txtOutputDirectory_TextChanged(object sender, EventArgs e)
+        {
+            MarkChanged(true);
+        }
+        private void MarkChanged(bool changed)
+        {
+            _btnApply.Enabled = changed;
+        }
+        private void _txtOutputFilename_TextChanged(object sender, EventArgs e)
+        {
+            MarkChanged(true);
+        }
+        private void _cboExportFileType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            MarkChanged(true);
+        }
+
+
     }
 }

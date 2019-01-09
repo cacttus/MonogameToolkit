@@ -22,6 +22,7 @@ namespace Monoedit
     public static class Globals
     {
         public static string ProjectRootPlaceholder = "$(ProjectRoot)";
+        public static string ProjectNamePlaceholder = "$(ProjectName)";
         public static string TitleImageName = "Icon.png";
         public static string ImagesFolder = ProjectRootPlaceholder + "/Images/";
 

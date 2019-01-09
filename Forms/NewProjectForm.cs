@@ -55,6 +55,9 @@ namespace Monoedit
             ProjectFile.ProjectName = "MyProject";
             ProjectFile.LoadedOrSavedFileName = System.IO.Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Monogame Toolkit Projects");
+
+            ProjectFile.OutputFilename = Globals.ProjectNamePlaceholder + ".json";
+            ProjectFile.OutputPath = Globals.ProjectRootPlaceholder + "/Output";
         }
         protected override void EditObject(object obj)
         {

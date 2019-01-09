@@ -85,6 +85,7 @@
             this._txtOutputDirectory.UseSelectable = true;
             this._txtOutputDirectory.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
             this._txtOutputDirectory.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            this._txtOutputDirectory.TextChanged += new System.EventHandler(this._txtOutputDirectory_TextChanged);
             this._txtOutputDirectory.Click += new System.EventHandler(this._txtOutputDirectory_Click);
             // 
             // _btnCancel
@@ -143,6 +144,7 @@
             this._cboExportFileType.TabIndex = 7;
             this._cboExportFileType.Theme = MetroFramework.MetroThemeStyle.Dark;
             this._cboExportFileType.UseSelectable = true;
+            this._cboExportFileType.SelectedIndexChanged += new System.EventHandler(this._cboExportFileType_SelectedIndexChanged);
             // 
             // _lblExportFileType
             // 
@@ -188,6 +190,7 @@
             this._txtOutputFilename.UseSelectable = true;
             this._txtOutputFilename.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
             this._txtOutputFilename.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            this._txtOutputFilename.TextChanged += new System.EventHandler(this._txtOutputFilename_TextChanged);
             this._txtOutputFilename.Click += new System.EventHandler(this._txtOutputDirectory_Click);
             // 
             // metroLabel2

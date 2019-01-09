@@ -382,6 +382,7 @@ namespace Monoedit
             closeProjectToolStripMenuItem.Enabled =
             saveToolStripMenuItem.Enabled =
             saveAsToolStripMenuItem.Enabled =
+            propertiesToolStripMenuItem.Enabled =
             (ProjectFile != null);
 
             //Update Title.

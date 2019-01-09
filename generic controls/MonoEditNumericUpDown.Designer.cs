@@ -67,7 +67,9 @@
             this._txtValue.UseSelectable = true;
             this._txtValue.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
             this._txtValue.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            this._txtValue.TextChanged += new System.EventHandler(this._txtValue_TextChanged);
             this._txtValue.Click += new System.EventHandler(this._txtValue_Click);
+            this._txtValue.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this._txtValue_KeyPress);
             // 
             // _btnUp
             // 
