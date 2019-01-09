@@ -10,13 +10,18 @@ using System.Windows.Forms;
 
 namespace Monoedit
 {
+    public enum DataType {
+        Double,
+        Int32
+    }
+
     public partial class MonoEditNumericUpDown : MetroFramework.Controls.MetroUserControl
     {
         public MonoEditNumericUpDown()
         {
             InitializeComponent();
         }
-
+        public DataType DataType { get; set; } = DataType.Double;
         public Action ValueChanged { get; set; } = null;
         public double Min { get; set; } = 0;
         public double Max { get; set; } = 100;
@@ -73,7 +78,7 @@ namespace Monoedit
         }
         private void _txtValue_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (e.KeyChar != '.'))
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (DataType == DataType.Double && e.KeyChar != '.'))
             {
                 e.Handled = true;
             }
@@ -82,7 +87,7 @@ namespace Monoedit
             MetroFramework.Controls.MetroTextBox mt = (sender as MetroFramework.Controls.MetroTextBox);
             if (mt != null)
             {
-                if ((e.KeyChar == '.') && (mt.Text.IndexOf('.') > -1))
+                if (( (DataType == DataType.Double) && (e.KeyChar == '.') && (mt.Text.IndexOf('.') > -1)))
                 {
                     e.Handled = true;
                 }

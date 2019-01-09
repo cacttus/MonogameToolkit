@@ -9,13 +9,11 @@ using System.Xml.Serialization;
 namespace Monoedit
 {
     //**We need something besides xmlserializer
-    public class ProjectFile :  Monoedit.JsonFile<ProjectFile>
+    public class ProjectFile : Monoedit.JsonFile<ProjectFile>
     {
         #region Private:Members
         [JsonProperty]
         private string _strProjectName = "";
-        [JsonIgnore]
-        private string _strLoadedOrSavedProjectFileName = "";
         [JsonProperty]
         private List<ImageResource> _lstImages = new List<ImageResource>();
         [JsonProperty]
@@ -23,17 +21,31 @@ namespace Monoedit
         [JsonProperty]
         private List<GameObject> _lstGameObjects = new List<GameObject>();
         [JsonProperty]
-        private List<Sprite> _lstSprites = new List<Sprite>();
+        private List<SpriteObject> _lstSpriteObjects = new List<SpriteObject>();
         [JsonProperty]
         private Int64 IdGen = 1000;
         [JsonProperty]
-        public int MaxUndo { get; set; } = 100;
+        public int MaxUndo { get; set; }
         [JsonProperty]
-        public int MaxAtlasSize { get; set; } = 4096;
+        public int MaxAtlasSize { get; set; }
+        [JsonProperty]
+        public int GrowAtlasBy { get; set; }
         [JsonProperty]
         public string OutputPath { get; set; } = "";
         [JsonProperty]
         public string OutputFilename { get; set; } = "";
+
+        public void SetDefaults()
+        {
+            //Defaults
+            ProjectName = "MyProject";
+            LoadedOrSavedFileName = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Monogame Toolkit Projects");
+            OutputFilename = Globals.ProjectNamePlaceholder + ".json";
+            OutputPath = Globals.ProjectRootPlaceholder + "/Output";
+            MaxUndo = 100;
+            MaxAtlasSize = 4096;
+            GrowAtlasBy = 128;
+        }
 
         public Int64 GenId()
         {
@@ -83,15 +95,15 @@ namespace Monoedit
             }
         }
         [JsonIgnore]
-        public List<Sprite> Sprites
+        public List<SpriteObject> SpriteObjects
         {
             get
             {
-                return _lstSprites;
+                return _lstSpriteObjects;
             }
             set
             {
-                _lstSprites = value;
+                _lstSpriteObjects = value;
                 MarkChanged();
             }
         }
@@ -129,25 +141,25 @@ namespace Monoedit
             return r;
         }
 
-        public ResourceBase GetResourceById(Int64 id)
-        {
-            ResourceBase r;
-            r = _lstImages.Where(x => x.Id == id).FirstOrDefault();
-            if (r != null) { return r; }
-            r = _lstTileMaps.Where(x => x.Id == id).FirstOrDefault();
-            if (r != null) { return r; }
-            r = _lstSprites.Where(x => x.Id == id).FirstOrDefault();
-            if (r != null) { return r; }
+        //public ResourceBase GetResourceById(Int64 id)
+        //{
+        //    ResourceBase r;
+        //    r = _lstImages.Where(x => x.Id == id).FirstOrDefault();
+        //    if (r != null) { return r; }
+        //    r = _lstTileMaps.Where(x => x.Id == id).FirstOrDefault();
+        //    if (r != null) { return r; }
+        //    r = _lstSpriteObjects.Where(x => x.Id == id).FirstOrDefault();
+        //    if (r != null) { return r; }
 
-            foreach (Sprite s in _lstSprites)
-            {
-                r = s.Frames.Where(x => x.Id == id).FirstOrDefault();
-                if (r != null) { return r; }
-            }
-            //TODO: more here
+        //    foreach (SpriteObject s in _lstSpriteObjects)
+        //    {
+        //        r = s.Frames.Where(x => x.Id == id).FirstOrDefault();
+        //        if (r != null) { return r; }
+        //    }
+        //    //TODO: more here
 
-            return null;
-        }
+        //    return null;
+        //}
 
         public void SetCwdToRoot()
         {

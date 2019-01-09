@@ -96,42 +96,42 @@ namespace Monoedit
             Id = id;
         }
 
-        public void Serialize(BinaryWriter stream, bool packImages)
-        {
-            if (MasterImage == null)
-            {
-                throw new Exception("The master image was null for the given MegaTex " + Name);
-            }
-            ImageConverter imageConverter = new ImageConverter();
-            BinUtils.WriteString(Name, stream);
-            BinUtils.WriteInt32(Id, stream);
-            if (packImages)
-            {
-                byte[] b = (byte[])imageConverter.ConvertTo((object)MasterImage, typeof(byte[]));
-                BinUtils.WriteInt32(b.Length, stream);
-                BinUtils.WriteBlock(b, stream);
-            }
-            else
-            {
-                BinUtils.WriteInt32(0, stream);
-            }
-        }
+        //public void Serialize(BinaryWriter stream, bool packImages)
+        //{
+        //    if (MasterImage == null)
+        //    {
+        //        throw new Exception("The master image was null for the given MegaTex " + Name);
+        //    }
+        //    ImageConverter imageConverter = new ImageConverter();
+        //    BinUtils.WriteString(Name, stream);
+        //    BinUtils.WriteInt32(Id, stream);
+        //    if (packImages)
+        //    {
+        //        byte[] b = (byte[])imageConverter.ConvertTo((object)MasterImage, typeof(byte[]));
+        //        BinUtils.WriteInt32(b.Length, stream);
+        //        BinUtils.WriteBlock(b, stream);
+        //    }
+        //    else
+        //    {
+        //        BinUtils.WriteInt32(0, stream);
+        //    }
+        //}
 
-        public void Deserialize(BinaryReader stream, bool packedTextures)
-        {
-            Name = BinUtils.ReadString(stream);
-            Id = BinUtils.ReadInt32(stream);
-            int count = BinUtils.ReadInt32(stream);
-            if (count <= 0)
-            {
-                return;
-            }
+        //public void Deserialize(BinaryReader stream, bool packedTextures)
+        //{
+        //    Name = BinUtils.ReadString(stream);
+        //    Id = BinUtils.ReadInt32(stream);
+        //    int count = BinUtils.ReadInt32(stream);
+        //    if (count <= 0)
+        //    {
+        //        return;
+        //    }
 
-            using (MemoryStream memoryStream = new MemoryStream(BinUtils.ReadBlock(count, stream)))
-            {
-                MasterImage = new Bitmap((Stream)memoryStream);
-            }
-        }
+        //    using (MemoryStream memoryStream = new MemoryStream(BinUtils.ReadBlock(count, stream)))
+        //    {
+        //        MasterImage = new Bitmap((Stream)memoryStream);
+        //    }
+        //}
 
         public void Compile(List<MtTex> Texs, int iMinTexSize, int iMaxTexSize, int iGrowBy)
         {
@@ -139,6 +139,7 @@ namespace Monoedit
             {
                 throw new Exception("Min texture size is greater than max texture size.");
             }
+
             Texs.Sort((Comparison<MtTex>)((a, b) =>
             {
                 int num1 = a.Image.Width * a.Image.Height;
@@ -147,9 +148,11 @@ namespace Monoedit
                     return 1;
                 return num1 < num2 ? -1 : 0;
             }));
+
             int num3 = iMinTexSize;
             int num4 = 0;
             List<MtTex> mtTexList = new List<MtTex>();
+
             while (num3 <= iMaxTexSize)
             {
                 _pRoot = new MtNode();
@@ -196,12 +199,12 @@ namespace Monoedit
                     break;
                 }
             }
+
             foreach (MtTex mtTex in mtTexList)
             {
                 Texs.Remove(mtTex);
             }
-            //if (num3 <= iMaxTexSize)
-            //    ;
+
             MasterImage = new Bitmap(num3, num3);
             foreach (MtTex mtTex1 in mtTexList)
             {
@@ -218,6 +221,7 @@ namespace Monoedit
                     }
                 }
             }
+
             foreach (MtTex mtTex in mtTexList)
             {
                 GraphicsUnit pageUnit = GraphicsUnit.Pixel;
@@ -230,6 +234,11 @@ namespace Monoedit
                 mtTex.Frame.h = mtTex.Node.Rect.Height();
                 mtTex.Frame.ImageResourceId = Id;
             }
+
         }
     }
+
+
+
+
 }

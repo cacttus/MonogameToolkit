@@ -42,13 +42,15 @@ namespace Monoedit
         private int iIconSize = 32;
         private Func<SpriteListView, List<SpriteListViewItem>> GetFrames;
         private Action<SpriteListView, List<object>> DeleteFunc;
+        private Action<SpriteListView, object> EditFunc;
 
-        public Action OnRefresh { get; set; } = null;
+        public Action OnUpdateListView { get; set; } = null;
 
-        public SpriteListView(Func<SpriteListView, List<SpriteListViewItem>> GetFramesFunc, Action<SpriteListView, List<object>> deleteFunc)
+        public SpriteListView(Func<SpriteListView, List<SpriteListViewItem>> GetFramesFunc, Action<SpriteListView, object> editFunc, Action<SpriteListView, List<object>> deleteFunc)
         {
             GetFrames = GetFramesFunc;
             DeleteFunc = deleteFunc;
+            EditFunc = editFunc;
             DoubleClick += new EventHandler(SpriteListView_DoubleClick);
             MouseClick += new MouseEventHandler(SpriteListView_Click);
             KeyDown += new KeyEventHandler(SpriteListView_KeyDown);
@@ -78,7 +80,14 @@ namespace Monoedit
                 return;
             }
 
-            DeleteFunc(this, GetSelectedObjects());
+            DialogResult r = Globals.MessageBox(
+                new Phrase("Discard?","¿Descarte?"),
+                new Phrase("Discard?","¿Descarte?"),
+                MessageBoxButtons.YesNo, null);
+            if (r == DialogResult.Yes)
+            {
+                DeleteFunc(this, GetSelectedObjects());
+            }
         }
 
         private void ContextMenu_Click(object sender, EventArgs e)
@@ -124,9 +133,9 @@ namespace Monoedit
                 {
                     return (f as Model3D).Name;
                 }
-                else if (f is Sprite)
+                else if (f is SpriteObject)
                 {
-                    return (f as Sprite).Name;
+                    return (f as SpriteObject).Name;
                 }
                 else if (f is Frame)
                 {
@@ -148,19 +157,11 @@ namespace Monoedit
         {
             object selectedObject = GetSelectedObject();
             if (selectedObject == null)
+            {
                 return;
-            if (selectedObject is Model3D)
-            {
-                Globals.MainForm.AddEditObject(selectedObject as Model3D, false);
             }
-            else if (selectedObject is Sprite)
-            {
-                Globals.MainForm.AddEditObject(selectedObject as Sprite, (selectedObject as Sprite).Model, false);
-            }
-            else if (selectedObject is Frame)
-            {
-                Globals.MainForm.AddEditObject(selectedObject as Frame, (selectedObject as Frame).Sprite, false);
-            }
+
+            EditFunc(this, selectedObject );
         }
 
         public void UpdateListView()
@@ -215,7 +216,7 @@ namespace Monoedit
             }
             SetListViewToSelectedObjectTag((ListView)this, selectedObject);
 
-            OnRefresh?.Invoke();
+            OnUpdateListView?.Invoke();
         }
 
         private static void SetListViewToSelectedObjectTag(ListView lv, object selected)

@@ -45,29 +45,32 @@ namespace Monoedit
             _editClick = edit;
             _removeClick = remove;
 
-            SpriteListView = new SpriteListView(getframes, remove);
+            SpriteListView = new SpriteListView(getframes, _editClick, _removeClick);
             Globals.SwapControl(_pnlSpriteListView, SpriteListView);
-            SpriteListView.OnRefresh = () => {
-                bool isSel = SpriteListView.GetSelectedObject() != null;
-                _btnEdit.Enabled = _btnRemove.Enabled = _btnCopy.Enabled = isSel;
 
-                if (isSel == false)
-                {
-                    ThemeApplier.SetBackgroundImage(_btnEdit, "appbar.edit.png", true);
-                    ThemeApplier.SetBackgroundImage(_btnRemove, "appbar.cancel.png", true);
-                    ThemeApplier.SetBackgroundImage(_btnCopy, "appbar.page.copy.png", true);
-                }
-                else
-                {
-                    ThemeApplier.SetBackgroundImage(_btnEdit, "appbar.edit.png");
-                    ThemeApplier.SetBackgroundImage(_btnRemove, "appbar.cancel.png");
-                    ThemeApplier.SetBackgroundImage(_btnCopy, "appbar.page.copy.png");
-                }
-            };
+            SpriteListView.SelectedIndexChanged += (a, b) => { UpdateButtons(); };
+            SpriteListView.OnUpdateListView = UpdateButtons;
 
             SpriteListView.UpdateListView();
         }
+        private void UpdateButtons()
+        {
+            bool isSel = SpriteListView.GetSelectedObject() != null;
+            _btnEdit.Enabled = _btnRemove.Enabled = _btnCopy.Enabled = isSel;
 
+            if (isSel == false)
+            {
+                ThemeApplier.SetBackgroundImage(_btnEdit, "appbar.edit.png", true);
+                ThemeApplier.SetBackgroundImage(_btnRemove, "appbar.cancel.png", true);
+                ThemeApplier.SetBackgroundImage(_btnCopy, "appbar.page.copy.png", true);
+            }
+            else
+            {
+                ThemeApplier.SetBackgroundImage(_btnEdit, "appbar.edit.png");
+                ThemeApplier.SetBackgroundImage(_btnRemove, "appbar.cancel.png");
+                ThemeApplier.SetBackgroundImage(_btnCopy, "appbar.page.copy.png");
+            }
+        }
         private void _btnAdd_Click(object sender, EventArgs e)
         {
             _addClick?.Invoke(SpriteListView);

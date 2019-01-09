@@ -12,6 +12,14 @@ namespace Monoedit
         //This does some crazy reverse lookups with a host of dictionaries for performance.
         public static Dictionary<LanguageCode, Dictionary<int, Phrase>> Lexicon = new Dictionary<LanguageCode, Dictionary<int, Phrase>>();
 
+        public static Phrase InvalidTextField = new Phrase("{0} contains invalid characters.", "{0} contiene caracteres no válidos.");
+        public static Phrase NoTextField = new Phrase("{0} needs a value.", "{0} necesita un valor.");
+        
+        //Sprite Object Editor
+        public static Phrase AddSpriteModel = new Phrase("Add Sprite Object", "Añadir objeto Sprite");
+        public static Phrase EditSpriteModel = new Phrase("Edit Sprite Object", "Editar Objeto Sprite");
+        public static Phrase AddEditAnimations = new Phrase("Add/Edit Animations", "añadir/editar animaciones");
+
         //Project Properties
         public static Phrase EditProjectProperties = new Phrase("Edit Project Properties", "Editar propiedades del proyecto");
 

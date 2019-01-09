@@ -12,7 +12,7 @@ namespace Monoedit
         Image
     }
     /// <summary>
-    /// an image, texture, or sprite atlas
+    /// An image, texture, or sprite atlas
     /// </summary>
     public class ImageResource : ResourceBase
     {
@@ -48,15 +48,11 @@ namespace Monoedit
                 LoadIfNecessary(false);
                 return _objBitmap;
             }
-            set
-            {
-                _objBitmap = value;
-            }
+            set{ _objBitmap = value; }
         }
 
         public ImageResource() { }
         public ImageResource(Int64 id) : base(id) { }
-
         public override void Refresh()
         {
             LoadIfNecessary(true);
@@ -81,17 +77,6 @@ namespace Monoedit
                 }
             }
         }
-
-        public bool hasValues()
-        {
-            if (string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(Path))
-            {
-                return false;
-            }
-            return true;
-        }
-
-        //Adding the image map utils.
         public Bitmap GetImageForFrame(Frame f)
         {
             if (f == null)
@@ -99,23 +84,19 @@ namespace Monoedit
                 Globals.LogError("Given Frame was null");
                 return Globals.GetDefaultXImage();
             }
-            return GetSubImageForRect(GetRectForFrame(f), f.ImageResourceId);
+            return GetSubImageForRect(f.GetRect());
         }
-
-        private Rectangle GetRectForFrame(Frame f)
+        private Bitmap GetSubImageForRect(Rectangle r)
         {
-            return new Rectangle(f.x, f.y, f.w, f.h);
-        }
+            //Load image (forced)
+            LoadIfNecessary(true);
 
-        private Bitmap GetSubImageForRect(Rectangle r, int texid)
-        {
-            LoadIfNecessary(false);
-
-            //Globals.GetDefaultXImage();
-
+            //copy sub-region to a new bitmap
             Rectangle destRegion = new Rectangle(0, 0, r.Width, r.Height);
             Bitmap destBitmap = new Bitmap(r.Width, r.Height);
             Globals.CopyRegionIntoImage(Bitmap, r, ref destBitmap, destRegion);
+
+            //return
             return destBitmap;
         }
 

@@ -14,6 +14,7 @@ namespace Monoedit
     {
         ProjectFile ProjectFile = null;
         MonoEditNumericUpDown _nudMaxTextureWidth;
+        MonoEditNumericUpDown _nudGrowBy;
 
         public ProjectPropertiesForm()
         {
@@ -21,14 +22,27 @@ namespace Monoedit
         }
         private void ProjectPropertiesForm_Load(object sender, EventArgs e)
         {
+            //Texture Width
             _nudMaxTextureWidth = new MonoEditNumericUpDown();
             _nudMaxTextureWidth.Min = 256;
             _nudMaxTextureWidth.Max = 32767;
             _nudMaxTextureWidth.Value = 4096;
+            _nudMaxTextureWidth.DataType = DataType.Int32;
             _nudMaxTextureWidth.ValueChanged = () => {
                 MarkChanged(true);
             };
             Globals.SwapControl(_pnlMaxTextureWidth, _nudMaxTextureWidth);
+
+            //Grow By
+            _nudGrowBy = new MonoEditNumericUpDown();
+            _nudGrowBy.Min = 32;
+            _nudGrowBy.Max = 1024;
+            _nudGrowBy.Value = 128;
+            _nudGrowBy.DataType = DataType.Int32;
+            _nudGrowBy.ValueChanged = () => {
+                MarkChanged(true);
+            };
+            Globals.SwapControl(_pnlGrowBy, _nudGrowBy);
 
             _cboExportFileType.Items.Add("PNG");
             _cboExportFileType.SelectedIndex = 0;
@@ -46,17 +60,20 @@ namespace Monoedit
         protected override void EditObject(object obj)
         {
             ProjectFile = obj as ProjectFile;
+            MarkChanged(false);
         }
         protected override void LoadData()
         {
             //throw new NotImplementedException();
             _nudMaxTextureWidth.Value = ProjectFile.MaxAtlasSize;
+            _nudGrowBy.Value = ProjectFile.GrowAtlasBy;
             _txtOutputDirectory.Text = ProjectFile.OutputPath;
             _txtOutputFilename.Text = ProjectFile.OutputFilename;
         }
         protected override void SaveData()
         {
             ProjectFile.MaxAtlasSize = (int)_nudMaxTextureWidth.Value;
+            ProjectFile.GrowAtlasBy = (int)_nudGrowBy.Value;
             ProjectFile.OutputPath = _txtOutputDirectory.Text.Trim();
             ProjectFile.OutputFilename = _txtOutputFilename.Text.Trim();
         }

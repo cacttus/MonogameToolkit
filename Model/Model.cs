@@ -23,10 +23,10 @@ namespace Monoedit
         public string BlendFile { get; set; }
         public ModelRenderParameters RenderParams { get; set; } = new ModelRenderParameters();
         public BlendFileInfo BlendFileInfo { get; set; } = new BlendFileInfo();
-        public Sprite DisplaySprite { get; set; } = (Sprite)null;
+        public SpriteObject DisplaySprite { get; set; } = (SpriteObject)null;
         public ScriptStatus ScriptStatus { get; set; } = ScriptStatus.None;
         public int Errors { get; set; } = 0;
-        public List<Sprite> Sprites { get; set; } = new List<Sprite>();
+        public List<SpriteObject> Sprites { get; set; } = new List<SpriteObject>();
 
         //public void Serialize(BinaryWriter stream, int version)
         //{

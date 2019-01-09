@@ -33,10 +33,10 @@ namespace Monoedit
             if (path.StartsWith(ProjectRootPlaceholder))
             {
                 string root = "";
-               // if (returnAbsolutePath)
-               // {
-                    root = Globals.MainForm.ProjectFile.GetProjectRoot();
-              //  }
+                // if (returnAbsolutePath)
+                // {
+                root = Globals.MainForm.ProjectFile.GetProjectRoot();
+                //  }
                 newpath = path.Replace(ProjectRootPlaceholder, "");
 
                 //path combine messes up if you have leading slash
@@ -711,6 +711,72 @@ namespace Monoedit
             }
             return ico;
         }
+
+        public static void ShowAddEdit<TObj, TObjForm>(
+            List<TObj> objs,
+            Phrase addTitlePhrase,
+            Phrase editTitlePhrase,
+            Func<TObj, Bitmap> getPreviewImage)
+            where TObj : IdItemBase
+            where TObjForm : AddEditWindowBase, new()
+        {
+            AddEditContainer addEditItemForm = new AddEditContainer();
+
+            Action<SpriteListView> add = (SpriteListView view) =>
+            {
+                TObjForm f = new TObjForm();
+                f.ShowForm(AddEditMode.Add, addEditItemForm, addTitlePhrase, null, (dr) => { });
+                view.UpdateListView();
+            };
+            Action<SpriteListView, object> edit = (SpriteListView view, object obj) =>
+            {
+                TObjForm f = new TObjForm();
+                TObj r = obj as TObj;
+                if (obj != null)
+                {
+                    f.ShowForm(AddEditMode.Edit, addEditItemForm, editTitlePhrase, r, (dr) => { });
+                    view.UpdateListView();
+                }
+            };
+            Action<SpriteListView, List<object>> remove = (SpriteListView view, List<object> xs) =>
+            {
+                foreach (object ob in xs)
+                {
+                    TObj so = ob as TObj;
+                    if (so != null)
+                    {
+                        objs.Remove(so);
+                    }
+                }
+                view.UpdateListView();
+            };
+            Func<SpriteListView, List<SpriteListViewItem>> getframes = (SpriteListView view) =>
+            {
+                List<SpriteListViewItem> items = new List<SpriteListViewItem>();
+                if (Globals.MainForm.ProjectFile != null)
+                {
+                    foreach (TObj s in objs)
+                    {
+                        SpriteListViewItem li = new SpriteListViewItem(s, getPreviewImage(s));
+                        items.Add(li);
+                    }
+                }
+
+                return items;
+            };
+
+            addEditItemForm.Init(add, edit, remove, getframes);
+            addEditItemForm.ShowDialog(Globals.MainForm);
+        }
+
+
+
+
+
+
+
+
+
     }
 }
 

@@ -61,6 +61,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\SpriteObjectForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SpriteObjectForm.Designer.cs">
+      <DependentUpon>SpriteObjectForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MapEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MapEditorForm.Designer.cs">
+      <DependentUpon>MapEditorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\AnimationEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AnimationEditorForm.Designer.cs">
+      <DependentUpon>AnimationEditorForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ProjectPropertiesForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -115,11 +133,11 @@
     <Compile Include="Generic Controls\AddEditContainer.Designer.cs">
       <DependentUpon>AddEditContainer.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\AddEditImage.cs">
+    <Compile Include="Forms\ImageResourceForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\AddEditImage.Designer.cs">
-      <DependentUpon>AddEditImage.cs</DependentUpon>
+    <Compile Include="Forms\ImageResourceForm.Designer.cs">
+      <DependentUpon>ImageResourceForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Generic Controls\CustomMessageBoxForm.cs">
       <SubType>Form</SubType>
@@ -149,7 +167,7 @@
     <Compile Include="Model\NativeMethods.cs" />
     <Compile Include="Model\ProjectFile.cs" />
     <Compile Include="Model\ResourceBase.cs" />
-    <Compile Include="Model\Sprite.cs" />
+    <Compile Include="Model\SpriteObject.cs" />
     <Compile Include="Model\TileMap.cs" />
     <Compile Include="Model\UndoManager.cs" />
     <Compile Include="Model\WindowManager.cs" />
@@ -190,8 +208,17 @@
     <Compile Include="Generic Controls\AddEditWindowBase.Designer.cs">
       <DependentUpon>AddEditWindowBase.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Forms\SpriteObjectForm.resx">
+      <DependentUpon>SpriteObjectForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MapEditorForm.resx">
+      <DependentUpon>MapEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\ProjectPropertiesForm.resx">
       <DependentUpon>ProjectPropertiesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AnimationEditorForm.resx">
+      <DependentUpon>AnimationEditorForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Generic Controls\MonoEditForm.resx">
       <DependentUpon>MonoEditForm.cs</DependentUpon>
@@ -202,8 +229,8 @@
     <EmbeddedResource Include="Generic Controls\AddEditContainer.resx">
       <DependentUpon>AddEditContainer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\AddEditImage.resx">
-      <DependentUpon>AddEditImage.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\ImageResourceForm.resx">
+      <DependentUpon>ImageResourceForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Generic Controls\CustomMessageBoxForm.resx">
       <DependentUpon>CustomMessageBoxForm.cs</DependentUpon>

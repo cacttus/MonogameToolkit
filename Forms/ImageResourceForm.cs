@@ -10,12 +10,12 @@ using System.Windows.Forms;
 using MetroFramework.Forms;
 namespace Monoedit
 {
-    public partial class AddEditImage : AddEditWindowBase
+    public partial class ImageResourceForm : AddEditWindowBase
     {
         public ImageResource ImageResource { get; private set; }
         private SelectFile _objSelectFile = new SelectFile();
 
-        public AddEditImage()
+        public ImageResourceForm()
         {
             InitializeComponent();
             Globals.SetTooltip(
@@ -59,44 +59,7 @@ namespace Monoedit
         #region UI 
         private void _btnOk_Click(object sender, EventArgs e)
         {
-            ApplyChangesAndClose(() =>
-            {
-                //All resources are now copied
-                if (CopyImageToProjectDir() == false)
-                {
-                    return false;
-                }
-
-                //Vvalidated successfully
-                DialogResult = true;
-
-                SaveData();
-
-                //Add resource to project file.
-                if (AddEditMode == AddEditMode.Add)
-                {
-                    if (!Globals.MainForm.ProjectFile.Images.Contains(ImageResource))
-                    {
-                        Globals.MainForm.ProjectFile.Images.Add(ImageResource);
-                    }
-                    else
-                    {
-                        //test
-                        Globals.LogError("Image resource was already found in project.");
-                        System.Diagnostics.Debugger.Break();
-                    }
-                }
-                else if (AddEditMode == AddEditMode.Edit)
-                {
-                    //Do nothin
-                }
-                else
-                {
-                    throw new NotImplementedException();
-                }
-
-                return true;
-            });
+            ApplyChangesAndClose(ApplyChanges);
         }
         private void _btnCancel_Click(object sender, EventArgs e)
         {
@@ -128,10 +91,13 @@ namespace Monoedit
             _txtImageName.ForeColor = Color.Black;
             _objSelectFile.FileLocationTextBox.ForeColor = Color.Black;
 
+
+            CheckValidName(results, _txtImageName, _lblImageName.Text);
+
+
             if (String.IsNullOrEmpty(_txtImageName.Text))
             {
                 results.Add("Please set the resource name.");
-                _txtImageName.ForeColor = Color.Red;
             }
 
             foreach (ImageResource ir in Globals.MainForm.ProjectFile.Images)
@@ -193,14 +159,60 @@ namespace Monoedit
         protected override void AddObject()
         {
             ImageResource = new ImageResource();
+            MarkChanged(true);
         }
         protected override void EditObject(object obj)
         {
             ImageResource = obj as ImageResource;
+            MarkChanged(false);
         }
         #endregion
 
         #region Private:Methods
+        bool ApplyChanges()
+        {
+            //All resources are now copied
+            if (CopyImageToProjectDir() == false)
+            {
+                return false;
+            }
+
+            //Vvalidated successfully
+            DialogResult = true;
+
+            SaveData();
+
+            //Add resource to project file.
+            if (AddEditMode == AddEditMode.Add)
+            {
+                if (!Globals.MainForm.ProjectFile.Images.Contains(ImageResource))
+                {
+                    Globals.MainForm.ProjectFile.Images.Add(ImageResource);
+                }
+                else
+                {
+                    //test
+                    Globals.LogError("Image resource was already found in project.");
+                    System.Diagnostics.Debugger.Break();
+                }
+            }
+            else if (AddEditMode == AddEditMode.Edit)
+            {
+                //Do nothin
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+
+            MarkChanged(false);
+
+            return true;
+        }
+        private void MarkChanged(bool changed)
+        {
+            _btnApply.Enabled = changed;
+        }
         private void UpdateImagePreview()
         {
             Bitmap bmp = null;
@@ -226,8 +238,8 @@ namespace Monoedit
 
         private bool CopyImageToProjectDir()
         {
-            string p0 = System.IO.Path.GetFullPath(_txtProjectPath.Text);
-            string p1 = System.IO.Path.GetFullPath(ImageResource.Path);
+            string p0 = Globals.ResolvePath(_txtProjectPath.Text);
+            string p1 = Globals.ResolvePath(_objSelectFile.PathText);
 
             if ((AddEditMode == AddEditMode.Edit && p0 != p1) || AddEditMode == AddEditMode.Add)
             {
@@ -245,8 +257,8 @@ namespace Monoedit
             //Returns false if the user cancelled the operation
             try
             {
-                string projectPath = Globals.ResolvePath(ImageResource.Path);
                 string filePath = Globals.ResolvePath(_objSelectFile.PathText);
+                string projectPath = Globals.ResolvePath(_txtProjectPath.Text);
 
                 if (Globals.PathsAreEqual(projectPath, filePath))
                 {
@@ -299,7 +311,7 @@ namespace Monoedit
         //            msg = "";
         //        }
 
-              
+
         //        //file already exists! ask user about this.
         //        DialogResult r = CustomMessageBox.Show(msg, Phrases.Warning,
         //            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Asterisk);
@@ -334,9 +346,13 @@ namespace Monoedit
 
 
 
+
         #endregion
 
-
+        private void _btnApply_Click(object sender, EventArgs e)
+        {
+            ApplyChanges(ApplyChanges);
+        }
     }
 
 

@@ -39,6 +39,8 @@
             this._txtOutputFilename = new MetroFramework.Controls.MetroTextBox();
             this.metroLabel2 = new MetroFramework.Controls.MetroLabel();
             this._pnlMaxTextureWidth = new System.Windows.Forms.Panel();
+            this.metroLabel3 = new MetroFramework.Controls.MetroLabel();
+            this._pnlGrowBy = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // _lblOutputDirectory
@@ -91,7 +93,7 @@
             // _btnCancel
             // 
             this._btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this._btnCancel.Location = new System.Drawing.Point(282, 250);
+            this._btnCancel.Location = new System.Drawing.Point(282, 334);
             this._btnCancel.Name = "_btnCancel";
             this._btnCancel.Size = new System.Drawing.Size(75, 23);
             this._btnCancel.TabIndex = 4;
@@ -103,7 +105,7 @@
             // _btnOk
             // 
             this._btnOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this._btnOk.Location = new System.Drawing.Point(120, 250);
+            this._btnOk.Location = new System.Drawing.Point(120, 334);
             this._btnOk.Name = "_btnOk";
             this._btnOk.Size = new System.Drawing.Size(75, 23);
             this._btnOk.TabIndex = 5;
@@ -115,7 +117,7 @@
             // _btnApply
             // 
             this._btnApply.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this._btnApply.Location = new System.Drawing.Point(201, 250);
+            this._btnApply.Location = new System.Drawing.Point(201, 334);
             this._btnApply.Name = "_btnApply";
             this._btnApply.Size = new System.Drawing.Size(75, 23);
             this._btnApply.TabIndex = 5;
@@ -210,11 +212,29 @@
             this._pnlMaxTextureWidth.Size = new System.Drawing.Size(119, 32);
             this._pnlMaxTextureWidth.TabIndex = 8;
             // 
+            // metroLabel3
+            // 
+            this.metroLabel3.AutoSize = true;
+            this.metroLabel3.Location = new System.Drawing.Point(23, 245);
+            this.metroLabel3.Name = "metroLabel3";
+            this.metroLabel3.Size = new System.Drawing.Size(61, 19);
+            this.metroLabel3.TabIndex = 0;
+            this.metroLabel3.Text = "Grow By:";
+            this.metroLabel3.Theme = MetroFramework.MetroThemeStyle.Dark;
+            // 
+            // _pnlGrowBy
+            // 
+            this._pnlGrowBy.Location = new System.Drawing.Point(90, 245);
+            this._pnlGrowBy.Name = "_pnlGrowBy";
+            this._pnlGrowBy.Size = new System.Drawing.Size(119, 32);
+            this._pnlGrowBy.TabIndex = 8;
+            // 
             // ProjectPropertiesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(488, 296);
+            this.ClientSize = new System.Drawing.Size(488, 380);
+            this.Controls.Add(this._pnlGrowBy);
             this.Controls.Add(this._pnlMaxTextureWidth);
             this.Controls.Add(this._cboExportFileType);
             this.Controls.Add(this._btnCancel);
@@ -223,6 +243,7 @@
             this.Controls.Add(this._txtOutputFilename);
             this.Controls.Add(this._txtOutputDirectory);
             this.Controls.Add(this._lblExportFileType);
+            this.Controls.Add(this.metroLabel3);
             this.Controls.Add(this.metroLabel1);
             this.Controls.Add(this.metroLabel2);
             this.Controls.Add(this._lblOutputDirectory);
@@ -247,5 +268,7 @@
         private MetroFramework.Controls.MetroTextBox _txtOutputFilename;
         private MetroFramework.Controls.MetroLabel metroLabel2;
         private System.Windows.Forms.Panel _pnlMaxTextureWidth;
+        private MetroFramework.Controls.MetroLabel metroLabel3;
+        private System.Windows.Forms.Panel _pnlGrowBy;
     }
 }

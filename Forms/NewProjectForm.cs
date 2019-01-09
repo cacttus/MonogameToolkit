@@ -50,14 +50,9 @@ namespace Monoedit
         protected override void AddObject()
         {
             ProjectFile = new ProjectFile();
-            
-            //Defaults
-            ProjectFile.ProjectName = "MyProject";
-            ProjectFile.LoadedOrSavedFileName = System.IO.Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Monogame Toolkit Projects");
 
-            ProjectFile.OutputFilename = Globals.ProjectNamePlaceholder + ".json";
-            ProjectFile.OutputPath = Globals.ProjectRootPlaceholder + "/Output";
+            ProjectFile.SetDefaults();
+
         }
         protected override void EditObject(object obj)
         {
@@ -84,10 +79,9 @@ namespace Monoedit
         protected override List<string> Validate()
         {
             List<string> errs = new List<string>();
-            if (string.IsNullOrEmpty(_txtProjectName.Text))
-            {
-                errs.Add(Translator.Translate(Phrases.ProjectNameIsEmpty));
-            }
+
+            CheckValidName(errs, _txtProjectName, _lblProjectName.Text);
+
             string filePath = GetFilePath();
             if (System.IO.Directory.Exists(filePath))
             {

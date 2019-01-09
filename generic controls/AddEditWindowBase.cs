@@ -1,10 +1,12 @@
-﻿using System;
+﻿using MetroFramework.Controls;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -35,6 +37,25 @@ namespace Monoedit
         protected virtual void EditObject(object obj) { throw new NotImplementedException(); }
         protected virtual void LoadData() { throw new NotImplementedException(); }
         protected virtual void SaveData() { throw new NotImplementedException(); }
+
+        protected bool CheckValidName(List<string> results, MetroTextBox textValue, string fieldName)
+        {
+            bool b = true;
+            if (string.IsNullOrEmpty(textValue.Text))
+            {
+                results.Add(Translator.Translate(Phrases.NoTextField).Replace("{0}", fieldName));
+                b = false;
+            }
+
+            if (!Regex.IsMatch(textValue.Text, @"^[a-zA-Z0-9_-]+$"))
+            {
+                results.Add(Translator.Translate(Phrases.InvalidTextField).Replace("{0}", fieldName));
+                b = false;
+            }
+
+
+            return b;
+        }
 
         private void ToolWindowBase_Load(object sender, EventArgs e)
         {
@@ -101,7 +122,12 @@ namespace Monoedit
                 }
                 else
                 {
-                    return postValidate();
+                    bool post = postValidate();
+
+                    //**After we save and validate then set the mode to edit.
+                    AddEditMode = AddEditMode.Edit;
+
+                    return post;
                 }
             }
             catch (Exception ex)

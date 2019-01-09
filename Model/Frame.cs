@@ -19,12 +19,12 @@ namespace Monoedit
         [JsonProperty]
         public int Delay = 41;
         [JsonProperty]
-        public int ImageResourceId = -1;
-        [JsonProperty]
-        public string Location = "";
+        public long ImageResourceId = -1;
+        //   [JsonProperty]
+        //  public string Location = "";
 
-        [JsonProperty]
-        public int FrameId = -1;
+        //[JsonProperty]
+        //public int FrameId = -1;
         [JsonProperty]
         public int x;
         [JsonProperty]
@@ -37,10 +37,30 @@ namespace Monoedit
         ///[JsonIgnore]
         //public MtTex ImageTemp { get; set; } = null;
         [JsonIgnore]
-        public ImageResource ImageResource { get; set; } = null;
+        private ImageResource _objImageResource = null;
         [JsonIgnore]
-        public Sprite Sprite { get; set; } = (Sprite)null;
+        public ImageResource ImageResource
+        {
+            get { return _objImageResource; }
+            set
+            {
+                _objImageResource = value;
+                if (_objImageResource != null)
+                {
+                    ImageResourceId = _objImageResource.Id;
+                }
+            }
+        }
+        [JsonIgnore]
+        public SpriteObject Sprite { get; set; } = (SpriteObject)null;
 
+        public Frame() { }
+        public Frame(Int64 id) : base(id) { }
+
+        public Rectangle GetRect()
+        {
+            return new Rectangle(x, y, w, h);
+        }
         public Bitmap GetImageForFrame()
         {
             Bitmap b = null;
@@ -54,40 +74,37 @@ namespace Monoedit
             }
             return b;
         }
-        public Frame() { }
-        public Frame(Int64 id) : base(id) { }
-
         public override void Refresh()
         {
             throw new NotImplementedException();
         }
 
-        public override void Serialize(BinaryWriter stream, string version)
-        {
-            BinUtils.WriteInt32(x, stream);
-            BinUtils.WriteInt32(y, stream);
-            BinUtils.WriteInt32(w, stream);
-            BinUtils.WriteInt32(h, stream);
-            BinUtils.WriteInt32(ImageResourceId, stream);
-            BinUtils.WriteInt32(Delay, stream);
-            BinUtils.WriteString(Location, stream);
-            BinUtils.WriteString(Name, stream);
-            BinUtils.WriteInt32(FrameId, stream);
-        }
+        //public override void Serialize(BinaryWriter stream, string version)
+        //{
+        //    BinUtils.WriteInt32(x, stream);
+        //    BinUtils.WriteInt32(y, stream);
+        //    BinUtils.WriteInt32(w, stream);
+        //    BinUtils.WriteInt32(h, stream);
+        //    BinUtils.WriteInt32(ImageResourceId, stream);
+        //    BinUtils.WriteInt32(Delay, stream);
+        //    BinUtils.WriteString(Location, stream);
+        //    BinUtils.WriteString(Name, stream);
+        //    BinUtils.WriteInt32(FrameId, stream);
+        //}
 
-        public override void Deserialize(BinaryReader stream, string version)
-        {
-            Block block = new Block(stream);
-            x = BinUtils.ReadInt32(stream);
-            y = BinUtils.ReadInt32(stream);
-            w = BinUtils.ReadInt32(stream);
-            h = BinUtils.ReadInt32(stream);
-            ImageResourceId = BinUtils.ReadInt32(stream);
-            Delay = BinUtils.ReadInt32(stream);
-            Location = BinUtils.ReadString(stream);
-            Name = BinUtils.ReadString(stream);
-            FrameId = BinUtils.ReadInt32(stream);
-        }
+        //public override void Deserialize(BinaryReader stream, string version)
+        //{
+        //    Block block = new Block(stream);
+        //    x = BinUtils.ReadInt32(stream);
+        //    y = BinUtils.ReadInt32(stream);
+        //    w = BinUtils.ReadInt32(stream);
+        //    h = BinUtils.ReadInt32(stream);
+        //    ImageResourceId = BinUtils.ReadInt32(stream);
+        //    Delay = BinUtils.ReadInt32(stream);
+        //    Location = BinUtils.ReadString(stream);
+        //    Name = BinUtils.ReadString(stream);
+        //    FrameId = BinUtils.ReadInt32(stream);
+        //}
 
         //public Frame CreateCopy()
         //{

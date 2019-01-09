@@ -1,6 +1,6 @@
 ﻿namespace Monoedit
 {
-    partial class AddEditImage
+    partial class ImageResourceForm
     {
         /// <summary>
         /// Required designer variable.
@@ -60,6 +60,7 @@
             this.metroLabel4 = new MetroFramework.Controls.MetroLabel();
             this._lblAtlasParameters = new MetroFramework.Controls.MetroLabel();
             this.metroPanel2 = new MetroFramework.Controls.MetroPanel();
+            this._btnApply = new MetroFramework.Controls.MetroButton();
             ((System.ComponentModel.ISupportInitialize)(this._pbImage)).BeginInit();
             this._gbpAtlasParameters.SuspendLayout();
             this.metroPanel2.SuspendLayout();
@@ -86,7 +87,7 @@
             // _btnCancel
             // 
             this._btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this._btnCancel.Location = new System.Drawing.Point(156, 511);
+            this._btnCancel.Location = new System.Drawing.Point(211, 511);
             this._btnCancel.Name = "_btnCancel";
             this._btnCancel.Size = new System.Drawing.Size(75, 23);
             this._btnCancel.TabIndex = 4;
@@ -98,7 +99,7 @@
             // _btnOk
             // 
             this._btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this._btnOk.Location = new System.Drawing.Point(75, 511);
+            this._btnOk.Location = new System.Drawing.Point(48, 511);
             this._btnOk.Name = "_btnOk";
             this._btnOk.Size = new System.Drawing.Size(75, 23);
             this._btnOk.TabIndex = 5;
@@ -118,7 +119,7 @@
             this._btnReload.UseSelectable = true;
             this._btnReload.Click += new System.EventHandler(this._btnReload_Click);
             // 
-            // _txtActualPath
+            // _txtProjectPath
             // 
             this._txtProjectPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -139,7 +140,7 @@
         "/"};
             this._txtProjectPath.Location = new System.Drawing.Point(36, 207);
             this._txtProjectPath.MaxLength = 32767;
-            this._txtProjectPath.Name = "_txtActualPath";
+            this._txtProjectPath.Name = "_txtProjectPath";
             this._txtProjectPath.PasswordChar = '\0';
             this._txtProjectPath.ScrollBars = System.Windows.Forms.ScrollBars.None;
             this._txtProjectPath.SelectedText = "";
@@ -603,7 +604,19 @@
             this.metroPanel2.VerticalScrollbarHighlightOnWheel = false;
             this.metroPanel2.VerticalScrollbarSize = 10;
             // 
-            // AddEditImage
+            // _btnApply
+            // 
+            this._btnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this._btnApply.Location = new System.Drawing.Point(129, 511);
+            this._btnApply.Name = "_btnApply";
+            this._btnApply.Size = new System.Drawing.Size(75, 23);
+            this._btnApply.TabIndex = 5;
+            this._btnApply.Text = "Apply";
+            this._btnApply.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this._btnApply.UseSelectable = true;
+            this._btnApply.Click += new System.EventHandler(this._btnApply_Click);
+            // 
+            // ImageResourceForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -620,10 +633,11 @@
             this.Controls.Add(this._txtProjectPath);
             this.Controls.Add(this._btnCancel);
             this.Controls.Add(this._btnReload);
+            this.Controls.Add(this._btnApply);
             this.Controls.Add(this._btnOk);
             this.Controls.Add(this._pnlLocation);
             this.Controls.Add(this._pbImage);
-            this.Name = "AddEditImage";
+            this.Name = "ImageResourceForm";
             this.Text = "Add/Edit Image";
             this.Load += new System.EventHandler(this.AddEditImage_Load);
             ((System.ComponentModel.ISupportInitialize)(this._pbImage)).EndInit();
@@ -670,5 +684,6 @@
         private MetroFramework.Controls.MetroLabel metroLabel12;
         private MetroFramework.Controls.MetroLabel metroLabel11;
         private MetroFramework.Controls.MetroLabel metroLabel4;
+        private MetroFramework.Controls.MetroButton _btnApply;
     }
 }

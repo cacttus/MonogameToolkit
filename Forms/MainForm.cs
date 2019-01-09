@@ -87,15 +87,6 @@ namespace Monoedit
                 _lblStatus.Text = stat;
             }));
         }
-        public void AddEditObject(Model3D m, bool bClose)
-        {
-        }
-        public void AddEditObject(Sprite s, Model3D m, bool bClose)
-        {
-        }
-        public void AddEditObject(Frame fr, Sprite s, bool bClose)
-        {
-        }
         public void MarkChanged(bool changed)
         {
             if (this.ProjectFile != null)
@@ -383,6 +374,7 @@ namespace Monoedit
             saveToolStripMenuItem.Enabled =
             saveAsToolStripMenuItem.Enabled =
             propertiesToolStripMenuItem.Enabled =
+            mapsToolStripMenuItem.Enabled = 
             (ProjectFile != null);
 
             //Update Title.
@@ -448,9 +440,63 @@ namespace Monoedit
         }
         private void objectsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //Not sure.. How we're handling these?
         }
         private void spritesToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Globals.ShowAddEdit<SpriteObject, SpriteObjectForm>(
+                ProjectFile.SpriteObjects,
+                Phrases.AddSpriteModel,
+                Phrases.EditSpriteModel,
+                (ob) => { return ob.Preview; });
+
+            //AddEditContainer addEditItemForm = new AddEditContainer();
+
+            //Action<SpriteListView> add = (SpriteListView view) =>
+            //{
+            //    SpriteObjectForm f = new SpriteObjectForm();
+            //    f.ShowForm(AddEditMode.Add, addEditItemForm, Phrases.AddSpriteModel, null, (DialogResult? dr) => { });
+            //    view.UpdateListView();
+            //};
+            //Action<SpriteListView, object> edit = (SpriteListView view, object obj) =>
+            //{
+            //    SpriteObjectForm f = new SpriteObjectForm();
+            //    SpriteObject r = obj as SpriteObject;
+            //    if (obj != null)
+            //    {
+            //        f.ShowForm(AddEditMode.Edit, addEditItemForm, Phrases.EditSpriteModel, r, (DialogResult? dr) => { });
+            //        view.UpdateListView();
+            //    }
+            //};
+            //Action<SpriteListView, List<object>> remove = (SpriteListView view, List<object> xs) =>
+            //{
+            //    foreach(object ob in xs)
+            //    {
+            //        SpriteObject so = ob as SpriteObject;
+            //        if (so != null)
+            //        {
+            //            ProjectFile.SpriteObjects.Remove(so);
+            //        }
+            //    }
+            //    view.Refresh();
+            //};
+            //Func<SpriteListView, List<SpriteListViewItem>> getframes = (SpriteListView view) =>
+            //{
+            //    List<SpriteListViewItem> items = new List<SpriteListViewItem>();
+            //    if (ProjectFile != null)
+            //    {
+            //        foreach (SpriteObject s in ProjectFile.SpriteObjects)
+            //        {
+            //            SpriteListViewItem li = new SpriteListViewItem(s, s.Preview);
+            //            items.Add(li);
+            //        }
+            //    }
+
+            //    return items;
+            //};
+
+            //addEditItemForm.Init(add, edit, remove, getframes);
+            //addEditItemForm.ShowDialog(this);
         }
         private void layersToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -462,47 +508,60 @@ namespace Monoedit
         }
         private void imagesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AddEditContainer addEditItemForm = new AddEditContainer();
+            Globals.ShowAddEdit<ImageResource, ImageResourceForm>(
+                ProjectFile.Images,
+                Phrases.AddImage,
+                Phrases.EditImage,
+                (ob) => { return ob.Bitmap; });
 
-            Action<SpriteListView> add = (SpriteListView view) =>
-            {
-                AddEditImage f = new AddEditImage();
-                f.ShowForm(AddEditMode.Add, addEditItemForm,
-                    Phrases.AddImage, null, (DialogResult? dr) => { });
-                view.UpdateListView();
-            };
-            Action<SpriteListView, object> edit = (SpriteListView view, object obj) =>
-            {
-                AddEditImage f = new AddEditImage();
-                ImageResource r = obj as ImageResource;
-                if (obj != null)
-                {
-                    f.ShowForm(AddEditMode.Edit, addEditItemForm,
-                        Phrases.EditImage, r, (DialogResult? dr) => { });
-                    view.UpdateListView();
-                }
-            };
-            Action<SpriteListView, List<object>> remove = (SpriteListView view, List<object> xs) =>
-            {
-                view.Refresh();
-            };
-            Func<SpriteListView, List<SpriteListViewItem>> getframes = (SpriteListView view) =>
-            {
-                List<SpriteListViewItem> items = new List<SpriteListViewItem>();
-                if (ProjectFile != null)
-                {
-                    foreach (ImageResource r in ProjectFile.Images)
-                    {
-                        SpriteListViewItem li = new SpriteListViewItem(r, r.Bitmap);
-                        items.Add(li);
-                    }
-                }
 
-                return items;
-            };
+            //AddEditContainer addEditItemForm = new AddEditContainer();
 
-            addEditItemForm.Init(add, edit, remove, getframes);
-            addEditItemForm.ShowDialog(this);
+            //Action<SpriteListView> add = (SpriteListView view) =>
+            //{
+            //    ImageResourceForm f = new ImageResourceForm();
+            //    f.ShowForm(AddEditMode.Add, addEditItemForm, Phrases.AddImage, null, (DialogResult? dr) => { });
+            //    view.UpdateListView();
+            //};
+            //Action<SpriteListView, object> edit = (SpriteListView view, object obj) =>
+            //{
+            //    ImageResourceForm f = new ImageResourceForm();
+            //    ImageResource r = obj as ImageResource;
+            //    if (obj != null)
+            //    {
+            //        f.ShowForm(AddEditMode.Edit, addEditItemForm, Phrases.EditImage, r, (DialogResult? dr) => { });
+            //        view.UpdateListView();
+            //    }
+            //};
+            //Action<SpriteListView, List<object>> remove = (SpriteListView view, List<object> xs) =>
+            //{
+            //    foreach (object ob in xs)
+            //    {
+            //        ImageResource ir = ob as ImageResource;
+            //        if (ir != null)
+            //        {
+            //            ProjectFile.Images.Remove(ir);
+            //        }
+            //    }
+            //    view.Refresh();
+            //};
+            //Func<SpriteListView, List<SpriteListViewItem>> getframes = (SpriteListView view) =>
+            //{
+            //    List<SpriteListViewItem> items = new List<SpriteListViewItem>();
+            //    if (ProjectFile != null)
+            //    {
+            //        foreach (ImageResource r in ProjectFile.Images)
+            //        {
+            //            SpriteListViewItem li = new SpriteListViewItem(r, r.Bitmap);
+            //            items.Add(li);
+            //        }
+            //    }
+
+            //    return items;
+            //};
+
+            //addEditItemForm.Init(add, edit, remove, getframes);
+            //addEditItemForm.ShowDialog(this);
         }
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -723,6 +782,9 @@ namespace Monoedit
         private void exportToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //Export as a file thing.
+            MegaTex mt = new MegaTex(ProjectFile.ProjectName,0);
+            // mt.
+            throw new NotImplementedException();
         }
 
         private void propertiesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -736,5 +798,9 @@ namespace Monoedit
             );
         }
 
+        private void mapsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //Show the MapEditorForm class
+        }
     }
 }
