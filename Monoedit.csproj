@@ -195,7 +195,7 @@
     <Compile Include="Generic Controls\SelectFile.Designer.cs">
       <DependentUpon>SelectFile.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\SpriteListView.cs" />
+    <Compile Include="Model\SpriteListView.cs" />
     <Compile Include="Generic Controls\CollectionEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
