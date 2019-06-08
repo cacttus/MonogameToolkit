@@ -245,7 +245,7 @@ namespace Monoedit
                 {
                     p = Path.GetFullPath(new Uri(path).LocalPath)
                               .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
-                              .ToUpperInvariant();
+                              ;//.ToUpperInvariant();
                 }
                 catch (Exception ex)
                 {

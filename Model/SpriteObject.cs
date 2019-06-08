@@ -148,6 +148,7 @@ namespace Monoedit
         }
     }
 
+    //An animated piece of a spriteobject.  This has keyframes and accepts animation.
     public class SpriteComponent : ResourceBase
     {
         [JsonProperty]
