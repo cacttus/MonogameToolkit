@@ -39,6 +39,9 @@ namespace Monoedit
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this._pnlTimeline = new MetroFramework.Controls.MetroPanel();
             this._lblFrameNumber = new MetroFramework.Controls.MetroLabel();
             this._pnlFrameEnd = new MetroFramework.Controls.MetroPanel();
@@ -47,7 +50,6 @@ namespace Monoedit
             this._btnAddKey = new MetroFramework.Controls.MetroButton();
             this._tbKeyframes = new MetroFramework.Controls.MetroTrackBar();
             this._pbEditor = new System.Windows.Forms.PictureBox();
-            this._lsvSpriteComponents = new MetroFramework.Controls.MetroListView();
             this._pnlToolbar = new MetroFramework.Controls.MetroPanel();
             this._btnAddSprite = new MetroFramework.Controls.MetroButton();
             this.metroLabel1 = new MetroFramework.Controls.MetroLabel();
@@ -60,10 +62,18 @@ namespace Monoedit
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveCloseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.closeWithoutSavingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this._dgvComponents = new MetroFramework.Controls.MetroGrid();
+            this.Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Visible = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this._pnlTimeline.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this._pbEditor)).BeginInit();
             this._pnlToolbar.SuspendLayout();
             this._mnuMenu.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this._dgvComponents)).BeginInit();
             this.SuspendLayout();
             // 
             // _pnlTimeline
@@ -80,7 +90,7 @@ namespace Monoedit
             this._pnlTimeline.HorizontalScrollbarBarColor = true;
             this._pnlTimeline.HorizontalScrollbarHighlightOnWheel = false;
             this._pnlTimeline.HorizontalScrollbarSize = 10;
-            this._pnlTimeline.Location = new System.Drawing.Point(23, 486);
+            this._pnlTimeline.Location = new System.Drawing.Point(23, 511);
             this._pnlTimeline.Name = "_pnlTimeline";
             this._pnlTimeline.Size = new System.Drawing.Size(930, 73);
             this._pnlTimeline.TabIndex = 0;
@@ -165,25 +175,12 @@ namespace Monoedit
             this._pbEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this._pbEditor.BackColor = System.Drawing.Color.White;
             this._pbEditor.Location = new System.Drawing.Point(70, 91);
             this._pbEditor.Name = "_pbEditor";
-            this._pbEditor.Size = new System.Drawing.Size(703, 389);
+            this._pbEditor.Size = new System.Drawing.Size(703, 414);
             this._pbEditor.TabIndex = 1;
             this._pbEditor.TabStop = false;
-            // 
-            // _lsvSpriteComponents
-            // 
-            this._lsvSpriteComponents.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this._lsvSpriteComponents.Font = new System.Drawing.Font("Segoe UI", 12F);
-            this._lsvSpriteComponents.FullRowSelect = true;
-            this._lsvSpriteComponents.Location = new System.Drawing.Point(779, 113);
-            this._lsvSpriteComponents.Name = "_lsvSpriteComponents";
-            this._lsvSpriteComponents.OwnerDraw = true;
-            this._lsvSpriteComponents.Size = new System.Drawing.Size(174, 180);
-            this._lsvSpriteComponents.TabIndex = 2;
-            this._lsvSpriteComponents.Theme = MetroFramework.MetroThemeStyle.Dark;
-            this._lsvSpriteComponents.UseCompatibleStateImageBehavior = false;
-            this._lsvSpriteComponents.UseSelectable = true;
             // 
             // _pnlToolbar
             // 
@@ -195,7 +192,7 @@ namespace Monoedit
             this._pnlToolbar.HorizontalScrollbarSize = 10;
             this._pnlToolbar.Location = new System.Drawing.Point(23, 91);
             this._pnlToolbar.Name = "_pnlToolbar";
-            this._pnlToolbar.Size = new System.Drawing.Size(41, 389);
+            this._pnlToolbar.Size = new System.Drawing.Size(41, 414);
             this._pnlToolbar.TabIndex = 3;
             this._pnlToolbar.Theme = MetroFramework.MetroThemeStyle.Dark;
             this._pnlToolbar.VerticalScrollbarBarColor = true;
@@ -240,7 +237,8 @@ namespace Monoedit
             this._mnuMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.editToolStripMenuItem,
             this.helpToolStripMenuItem,
-            this.viewToolStripMenuItem});
+            this.viewToolStripMenuItem,
+            this.fileToolStripMenuItem});
             this._mnuMenu.Location = new System.Drawing.Point(20, 60);
             this._mnuMenu.Name = "_mnuMenu";
             this._mnuMenu.Size = new System.Drawing.Size(933, 24);
@@ -294,30 +292,133 @@ namespace Monoedit
             // 
             // viewToolStripMenuItem
             // 
+            this.viewToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.propertiesToolStripMenuItem});
+            this.viewToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "View";
             // 
             // propertiesToolStripMenuItem
             // 
+            this.propertiesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.propertiesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
-            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
             this.propertiesToolStripMenuItem.Text = "Properties";
+            // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveToolStripMenuItem,
+            this.saveCloseToolStripMenuItem,
+            this.closeWithoutSavingToolStripMenuItem});
+            this.fileToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Text = "File";
+            // 
+            // saveToolStripMenuItem
+            // 
+            this.saveToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.saveToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            // 
+            // saveCloseToolStripMenuItem
+            // 
+            this.saveCloseToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.saveCloseToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.saveCloseToolStripMenuItem.Name = "saveCloseToolStripMenuItem";
+            this.saveCloseToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.saveCloseToolStripMenuItem.Text = "Save && Close";
+            this.saveCloseToolStripMenuItem.Click += new System.EventHandler(this.saveCloseToolStripMenuItem_Click);
+            // 
+            // closeWithoutSavingToolStripMenuItem
+            // 
+            this.closeWithoutSavingToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.closeWithoutSavingToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.closeWithoutSavingToolStripMenuItem.Name = "closeWithoutSavingToolStripMenuItem";
+            this.closeWithoutSavingToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.closeWithoutSavingToolStripMenuItem.Text = "Close Without Saving";
+            this.closeWithoutSavingToolStripMenuItem.Click += new System.EventHandler(this.closeWithoutSavingToolStripMenuItem_Click);
+            // 
+            // _dgvComponents
+            // 
+            this._dgvComponents.AllowUserToResizeRows = false;
+            this._dgvComponents.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
+            this._dgvComponents.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this._dgvComponents.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this._dgvComponents.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(174)))), ((int)(((byte)(219)))));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(198)))), ((int)(((byte)(247)))));
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this._dgvComponents.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this._dgvComponents.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this._dgvComponents.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Name,
+            this.Visible});
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(198)))), ((int)(((byte)(247)))));
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this._dgvComponents.DefaultCellStyle = dataGridViewCellStyle2;
+            this._dgvComponents.EnableHeadersVisualStyles = false;
+            this._dgvComponents.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this._dgvComponents.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
+            this._dgvComponents.Location = new System.Drawing.Point(779, 113);
+            this._dgvComponents.Name = "_dgvComponents";
+            this._dgvComponents.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(174)))), ((int)(((byte)(219)))));
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(198)))), ((int)(((byte)(247)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this._dgvComponents.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            this._dgvComponents.RowHeadersVisible = false;
+            this._dgvComponents.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this._dgvComponents.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this._dgvComponents.ShowEditingIcon = false;
+            this._dgvComponents.Size = new System.Drawing.Size(174, 185);
+            this._dgvComponents.TabIndex = 6;
+            this._dgvComponents.Theme = MetroFramework.MetroThemeStyle.Dark;
+            // 
+            // Name
+            // 
+            this.Name.HeaderText = "Name";
+            this.Name.Name = "Name";
+            // 
+            // Visible
+            // 
+            this.Visible.FillWeight = 30F;
+            this.Visible.HeaderText = "Visible";
+            this.Visible.Name = "Visible";
+            this.Visible.Width = 30;
             // 
             // AnimationEditorForm
             // 
-            this.ClientSize = new System.Drawing.Size(973, 582);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.ClientSize = new System.Drawing.Size(973, 607);
+            this.Controls.Add(this._dgvComponents);
             this.Controls.Add(this._mnuMenu);
             this.Controls.Add(this.metroLabel2);
             this.Controls.Add(this._pnlToolbar);
-            this.Controls.Add(this._lsvSpriteComponents);
             this.Controls.Add(this._pbEditor);
             this.Controls.Add(this._pnlTimeline);
-            this.Name = "AnimationEditorForm";
             this.Text = "Animation Editor";
-            this.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.Load += new System.EventHandler(this.SpriteEditor_Load_1);
             this._pnlTimeline.ResumeLayout(false);
             this._pnlTimeline.PerformLayout();
@@ -325,6 +426,7 @@ namespace Monoedit
             this._pnlToolbar.ResumeLayout(false);
             this._mnuMenu.ResumeLayout(false);
             this._mnuMenu.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this._dgvComponents)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -340,7 +442,6 @@ namespace Monoedit
         private MetroFramework.Controls.MetroPanel _pnlFrameEnd;
         private MetroFramework.Controls.MetroPanel _pnlFrameStart;
         private PictureBox _pbEditor;
-        private MetroFramework.Controls.MetroListView _lsvSpriteComponents;
         private MetroFramework.Controls.MetroPanel _pnlToolbar;
         private MetroFramework.Controls.MetroButton _btnAddSprite;
         private MetroFramework.Controls.MetroLabel metroLabel2;
@@ -353,5 +454,12 @@ namespace Monoedit
         private MetroFramework.Controls.MetroLabel _lblFrameNumber;
         private ToolStripMenuItem viewToolStripMenuItem;
         private ToolStripMenuItem propertiesToolStripMenuItem;
+        private ToolStripMenuItem fileToolStripMenuItem;
+        private ToolStripMenuItem saveToolStripMenuItem;
+        private ToolStripMenuItem saveCloseToolStripMenuItem;
+        private ToolStripMenuItem closeWithoutSavingToolStripMenuItem;
+        private MetroFramework.Controls.MetroGrid _dgvComponents;
+        private DataGridViewTextBoxColumn Name;
+        private DataGridViewTextBoxColumn Visible;
     }
 }

@@ -45,6 +45,8 @@ namespace Monoedit
 
         [JsonProperty]
         public List<KeyFrame> _lstKeyFrames = new List<KeyFrame>();
+        [JsonProperty]
+        public int PreviewKeyFrameId { get; set; } = 0;
 
         [JsonIgnore]
         public List<KeyFrame> KeyFrames
@@ -53,15 +55,25 @@ namespace Monoedit
             set { _lstKeyFrames = value; }
         }
 
+
         public SpriteObjectAnimation() { }
         public SpriteObjectAnimation(Int64 id) : base(id) { }
         public override void Refresh()
         {
             throw new NotImplementedException();
         }
+        public Bitmap RenderKeyFrame(int frameId)
+        {
+            KeyFrame f  = KeyFrames.Where(x => x.Id == frameId).FirstOrDefault();
+            return RenderKeyFrame(f);
+        }
         public Bitmap RenderKeyFrame(KeyFrame f)
         {
             Bitmap ret = null;
+            if (f == null)
+            {
+                return null;
+            }
 
             //ooh.. ok
 
@@ -95,8 +107,6 @@ namespace Monoedit
         //Anim Id and Key Frame ID of the preview image to show for this sprite.
         [JsonProperty]
         public long PreviewAnimationId { get; set; } = -1;
-        [JsonProperty]
-        public int PreviewAnimationKeyFrameId { get; set; } = -1;
 
         [JsonIgnore]
         public Bitmap Preview
@@ -106,20 +116,12 @@ namespace Monoedit
                 Bitmap ret = null;
                 if (_lstAnimations != null && _lstAnimations.Count > 0)
                 {
-                    if (PreviewAnimationId >= 0 && PreviewAnimationKeyFrameId >= 0)
+                    if (PreviewAnimationId >= 0)
                     {
                         SpriteObjectAnimation found = _lstAnimations.Where(x => x.Id == PreviewAnimationId).FirstOrDefault();
                         if (found != null)
                         {
-                            
-
-                            KeyFrame f = found.KeyFrames.Where(x => x.Id == PreviewAnimationKeyFrameId).FirstOrDefault();
-                            if (f != null)
-                            {
-                                ret = found.RenderKeyFrame(f);
-
-                                //ret = f.GetPreview();
-                            }
+                            ret = found.RenderKeyFrame(found.PreviewKeyFrameId);
                         }
                     }
                 }

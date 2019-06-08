@@ -113,6 +113,13 @@ namespace Monoedit
 
         private void _btnEditAnimations_Click(object sender, EventArgs e)
         {
+            Globals.ShowAddEdit<SpriteObjectAnimation, AnimationEditorForm>(
+                SpriteObject.Animations,
+                //ProjectFile.SpriteObjects,
+                Phrases.AddSpriteAnimation,
+                Phrases.EditSpriteAnimation,
+                (ob) => { return ob.RenderKeyFrame(ob.PreviewKeyFrameId); });
+
             MarkChanged(true);
         }
     }

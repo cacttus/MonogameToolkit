@@ -37,7 +37,6 @@
             this.ClientSize = new System.Drawing.Size(301, 247);
             this.Name = "ToolWindowBase";
             this.Text = "ToolWindowBase";
-            this.Load += new System.EventHandler(this.ToolWindowBase_Load);
             this.ResumeLayout(false);
 
         }

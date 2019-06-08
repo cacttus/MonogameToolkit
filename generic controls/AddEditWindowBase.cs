@@ -32,38 +32,25 @@ namespace Monoedit
 
         private static int WindowIdGen = 1;
 
+        public AddEditWindowBase()
+        {
+            WindowId = WindowIdGen++;
+            //**Must be set to true
+            AllowDrop = true;
+        }
+
+        #region Protected Override MEmbers
         //Create or copy your add/edit form object with these
         protected virtual void AddObject() { throw new NotImplementedException(); }
         protected virtual void EditObject(object obj) { throw new NotImplementedException(); }
         protected virtual void LoadData() { throw new NotImplementedException(); }
         protected virtual void SaveData() { throw new NotImplementedException(); }
+        protected new virtual List<string> Validate() { throw new NotImplementedException(); }
+        #endregion
 
-        protected bool CheckValidName(List<string> results, MetroTextBox textValue, string fieldName)
-        {
-            bool b = true;
-            if (string.IsNullOrEmpty(textValue.Text))
-            {
-                results.Add(Translator.Translate(Phrases.NoTextField).Replace("{0}", fieldName));
-                b = false;
-            }
-
-            if (!Regex.IsMatch(textValue.Text, @"^[a-zA-Z0-9_-]+$"))
-            {
-                results.Add(Translator.Translate(Phrases.InvalidTextField).Replace("{0}", fieldName));
-                b = false;
-            }
-
-
-            return b;
-        }
-
-        private void ToolWindowBase_Load(object sender, EventArgs e)
-        {
-
-        }
-
+        #region Public Members
         public void ShowForm(AddEditMode e, IWin32Window owner,
-            Phrase addEditTitle, 
+            Phrase addEditTitle,
             object rsc, Action<DialogResult?> afterShow)
         {
             AddEditMode = e;
@@ -82,14 +69,26 @@ namespace Monoedit
             Globals.MainForm.ShowForm(Title, this, true, afterShow, owner);
         }
 
-        public AddEditWindowBase()
+        #endregion
+
+        #region Protected Members
+        protected bool CheckValidName(List<string> results, MetroTextBox textValue, string fieldName)
         {
-            WindowId = WindowIdGen++;
+            bool b = true;
+            if (string.IsNullOrEmpty(textValue.Text))
+            {
+                results.Add(Translator.Translate(Phrases.NoTextField).Replace("{0}", fieldName));
+                b = false;
+            }
 
-            //**Must be set to true
-            AllowDrop = true;
+            if (!Regex.IsMatch(textValue.Text, @"^[a-zA-Z0-9_-]+$"))
+            {
+                results.Add(Translator.Translate(Phrases.InvalidTextField).Replace("{0}", fieldName));
+                b = false;
+            }
+
+            return b;
         }
-
         //"Ok" button
         protected void ApplyChangesAndClose(Func<bool> postValidate)
         {
@@ -100,7 +99,7 @@ namespace Monoedit
             }
         }
         //"Cancel" button
-        public virtual bool CancelChanges()
+        protected bool CancelChanges()
         {
             DialogResult = false;
             Close();
@@ -137,11 +136,7 @@ namespace Monoedit
             }
         }
 
-        protected new virtual List<string> Validate()
-        {
-            throw new NotImplementedException();
-            return new List<string>();
-        }
+        #endregion
 
 
     }

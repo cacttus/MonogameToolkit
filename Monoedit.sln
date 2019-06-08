@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.28010.2050
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monoedit", "Monoedit.csproj", "{D8EFEA83-395C-4AFB-9F49-D31463D200CB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenGS", "OpenGS\OpenGS.csproj", "{6E906240-B25F-488F-9D6F-48FAC1111A9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp", "OpenGS\TestApp.csproj", "{7679C289-7C92-46A3-A4C2-70930DEAA6D5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{D8EFEA83-395C-4AFB-9F49-D31463D200CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8EFEA83-395C-4AFB-9F49-D31463D200CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8EFEA83-395C-4AFB-9F49-D31463D200CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E906240-B25F-488F-9D6F-48FAC1111A9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E906240-B25F-488F-9D6F-48FAC1111A9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E906240-B25F-488F-9D6F-48FAC1111A9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E906240-B25F-488F-9D6F-48FAC1111A9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7679C289-7C92-46A3-A4C2-70930DEAA6D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7679C289-7C92-46A3-A4C2-70930DEAA6D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7679C289-7C92-46A3-A4C2-70930DEAA6D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7679C289-7C92-46A3-A4C2-70930DEAA6D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

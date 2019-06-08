@@ -757,7 +757,12 @@ namespace Monoedit
                 {
                     foreach (TObj s in objs)
                     {
-                        SpriteListViewItem li = new SpriteListViewItem(s, getPreviewImage(s));
+                        Bitmap b = getPreviewImage(s);
+                        if (b == null)
+                        {
+                            b = Globals.GetDefaultXImage();
+                        }
+                        SpriteListViewItem li = new SpriteListViewItem(s, b);
                         items.Add(li);
                     }
                 }
